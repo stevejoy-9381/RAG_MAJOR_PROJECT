@@ -1,0 +1,227 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --scrollbar-thumb: #cbd5e1;
+    --scrollbar-track: transparent;
+    --sidebar-width: 18rem;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Thin, tasteful scrollbar */
+  ::-webkit-scrollbar        { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track  { background: var(--scrollbar-track); }
+  ::-webkit-scrollbar-thumb  { background: var(--scrollbar-thumb); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+  body {
+    @apply bg-slate-50 text-slate-900;
+  }
+}
+
+@layer components {
+  /* Reusable button base styles */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           bg-indigo-600 text-white text-sm font-medium rounded-lg
+           hover:bg-indigo-700 active:bg-indigo-800
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-colors duration-150 focus:outline-none
+           focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center gap-2 px-4 py-2
+           bg-white text-slate-700 text-sm font-medium rounded-lg
+           border border-slate-200
+           hover:bg-slate-50 hover:border-slate-300
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-colors duration-150 focus:outline-none
+           focus:ring-2 focus:ring-slate-400 focus:ring-offset-2;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center justify-center gap-2 px-3 py-2
+           text-slate-500 text-sm font-medium rounded-lg
+           hover:bg-slate-100 hover:text-slate-700
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-colors duration-150;
+  }
+
+  /* Form inputs */
+  .input {
+    @apply w-full px-3 py-2.5 text-sm rounded-lg
+           bg-white border border-slate-200
+           text-slate-900 placeholder:text-slate-400
+           focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent
+           transition-shadow duration-150;
+  }
+
+  /* Card surface */
+  .card {
+    @apply bg-white rounded-xl border border-slate-200 shadow-sm;
+  }
+}
+
+/* ── Sidebar transitions ─────────────────────────────────────────────────── */
+
+.sidebar-panel {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+/* Mobile: slide from left */
+@media (max-width: 767px) {
+  .sidebar-panel {
+    transform: translateX(-100%);
+  }
+  .sidebar-panel.sidebar-open {
+    transform: translateX(0);
+  }
+}
+
+/* Desktop: collapse/expand */
+@media (min-width: 768px) {
+  .sidebar-panel.sidebar-closed {
+    transform: translateX(-100%);
+    margin-left: -18rem; /* var(--sidebar-width) */
+  }
+  .sidebar-panel.sidebar-open {
+    transform: translateX(0);
+    margin-left: 0;
+  }
+}
+
+.sidebar-backdrop {
+  @apply fixed inset-0 bg-black/30 z-20;
+  animation: fadeIn 0.2s ease-out;
+}
+
+/* ── Blinking cursor animation for streaming text ────────────────────────── */
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+.streaming-cursor::after {
+  content: '▋';
+  display: inline-block;
+  animation: blink 0.8s step-end infinite;
+  color: #6366f1;
+  margin-left: 1px;
+  font-size: 0.9em;
+}
+
+/* ── Smooth message entry ────────────────────────────────────────────────── */
+
+.message-enter {
+  animation: slideUp 0.2s ease-out;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0);   }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* ── Typing indicator dots ───────────────────────────────────────────────── */
+
+.typing-dots span {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #6366f1;
+  animation: typingBounce 1.2s ease-in-out infinite;
+}
+
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0);   opacity: 0.4; }
+  30%           { transform: translateY(-4px); opacity: 1;   }
+}
+
+/* ── Prose styles for assistant markdown messages ────────────────────────── */
+
+.prose-assistant {
+  line-height: 1.6;
+}
+
+.prose-assistant > *:first-child {
+  margin-top: 0;
+}
+
+.prose-assistant > *:last-child {
+  margin-bottom: 0;
+}
+
+.prose-assistant p {
+  margin: 0.5em 0;
+}
+
+.prose-assistant p:first-child {
+  margin-top: 0;
+}
+
+.prose-assistant h1,
+.prose-assistant h2,
+.prose-assistant h3,
+.prose-assistant h4 {
+  font-weight: 600;
+  margin: 0.75em 0 0.4em;
+  line-height: 1.3;
+}
+
+.prose-assistant h1 { font-size: 1.15em; }
+.prose-assistant h2 { font-size: 1.05em; }
+.prose-assistant h3 { font-size: 1em; }
+
+.prose-assistant ul,
+.prose-assistant ol {
+  margin: 0.4em 0;
+  padding-left: 1.5em;
+}
+
+.prose-assistant li {
+  margin: 0.2em 0;
+}
+
+.prose-assistant ul { list-style-type: disc; }
+.prose-assistant ol { list-style-type: decimal; }
+
+.prose-assistant blockquote {
+  border-left: 3px solid #c7d2fe;
+  padding-left: 0.75em;
+  margin: 0.5em 0;
+  color: #64748b;
+  font-style: italic;
+}
+
+.prose-assistant hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 0.75em 0;
+}
+
+.prose-assistant strong {
+  font-weight: 600;
+}
