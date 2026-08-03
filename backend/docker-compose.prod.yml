@@ -51,7 +51,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 512M    # Frontend is lightweight — just Streamlit
+          memory: 512M    # Next.js frontend container
           cpus: "0.5"
         reservations:
           memory: 128M

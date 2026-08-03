@@ -116,7 +116,7 @@ def rewrite_query(question: str, provider: LLMProvider) -> list[str]:
         queries = [question] + alternatives
 
         # Log the rewriting results
-        print(f"\n[QUERY_REWRITER] ── Query rewriting ({rewrite_ms:.0f}ms, {provider.name}) ──")
+        print(f"\n[QUERY_REWRITER] -- Query rewriting ({rewrite_ms:.0f}ms, {provider.name}) --")
         print(f"[QUERY_REWRITER] Original: \"{question}\"")
         print(f"[QUERY_REWRITER] Rewritten queries:")
         for i, q in enumerate(queries):
@@ -128,6 +128,6 @@ def rewrite_query(question: str, provider: LLMProvider) -> list[str]:
 
     except Exception as e:
         elapsed_ms = (time.time() - t0) * 1000
-        print(f"\n[QUERY_REWRITER] ⚠ Rewriting failed ({elapsed_ms:.0f}ms): {e}")
+        print(f"\n[QUERY_REWRITER] [WARN] Rewriting failed ({elapsed_ms:.0f}ms): {e}")
         print(f"[QUERY_REWRITER] Falling back to original question only")
         return [question]

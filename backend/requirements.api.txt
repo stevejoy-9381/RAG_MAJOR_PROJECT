@@ -1,14 +1,12 @@
 # ─── requirements.api.txt ────────────────────────────────────────────────────
 # Used ONLY by Dockerfile.api (the FastAPI backend container).
-# Does NOT include Streamlit — keeps the API image focused.
+# Keeps the API image focused.
 #
 # WHY SPLIT REQUIREMENTS?
-#   If both containers used requirements.txt (the full list), every image
-#   would install Streamlit (unused in API) and all ML libs (unused in frontend).
+#   Separating backend and frontend requirements keeps images focused.
 #   Split files = faster builds + smaller images + clearer dependencies.
 #
 #   API image with this file:   ~2.8 GB  (ML libs are heavy)
-#   Frontend image with frontend file: ~800 MB  (just Streamlit + requests)
 # ─────────────────────────────────────────────────────────────────────────────
 
 # LangChain

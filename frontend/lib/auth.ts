@@ -7,7 +7,7 @@
 //
 //   Cookies with httpOnly are more secure (immune to XSS) but require
 //   the API and frontend to be on the same domain or use CORS with
-//   credentials. For a portfolio app with separate domains (Render + Streamlit),
+//   credentials. For a portfolio app with separate domains (Render + Vercel),
 //   localStorage is the practical choice.
 //
 //   Production upgrade: use httpOnly cookies with Next.js API routes

@@ -44,9 +44,23 @@ HOW get_current_user DEPENDENCY WORKS:
   parsing the Authorization header in every endpoint.
 """
 
+import sys
 import os
+os.environ["PYTHONIOENCODING"] = "utf-8"
 import json
 import time
+
+# Ensure UTF-8 output encoding on Windows consoles to prevent charmap encoding errors
+if sys.stdout and hasattr(sys.stdout, "reconfigure"):
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
+if sys.stderr and hasattr(sys.stderr, "reconfigure"):
+    try:
+        sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 import asyncio
 import tempfile
 import threading
@@ -94,8 +108,9 @@ from src.analytics import get_analytics_summary
 
 load_dotenv()
 
-# ─── Query rewriting config ───────────────────────────────────────────────────────
-QUERY_REWRITING_ENABLED = os.getenv("QUERY_REWRITING_ENABLED", "false").lower() in ("true", "1", "yes")
+# ─── Feature flags config ─────────────────────────────────────────────────────────
+from src.config import QUERY_REWRITING_ENABLED, SHOW_THINKING_PROCESS
+
 
 # ─── App setup ────────────────────────────────────────────────────────────────
 
@@ -112,6 +127,15 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def startup_event():
+    from src.config import GROQ_MODEL, GROQ_API_KEY
+    if GROQ_API_KEY or os.getenv("GROQ_API_KEY"):
+        print("Groq Provider Connected")
+        print(f"Model: {GROQ_MODEL}")
+
 
 
 # ─── Auth dependency ──────────────────────────────────────────────────────────
@@ -202,6 +226,7 @@ class ChatRequest(BaseModel):
     session_id: Optional[str] = None  # Deprecated — use conversation_id
     llm_mode: Optional[Literal["auto", "online", "offline"]] = "auto"
     use_query_rewriting: Optional[bool] = None  # Per-request override (None = use env default)
+    show_thinking: Optional[bool] = None  # Per-request override for streaming reasoning tokens
 
 
 class AnswerResponse(BaseModel):
@@ -214,6 +239,8 @@ class ChatResponse(BaseModel):
     sources: list
     conversation_id: str
     provider: str
+    reasoning: Optional[str] = None
+
 
 
 class RenameRequest(BaseModel):
@@ -657,11 +684,12 @@ async def stream_answer(
             token_queue: queue.Queue = queue.Queue()
             error_box: list = []
             t_start = time.time()
+            yield_reasoning = request.show_thinking if request.show_thinking is not None else SHOW_THINKING_PROCESS
 
             def producer():
                 try:
-                    for token in provider.chat(messages, stream=True):
-                        token_queue.put(token)
+                    for item in provider.chat(messages, stream=True, yield_reasoning=yield_reasoning):
+                        token_queue.put(item)
                 except Exception as e:
                     import traceback
                     traceback.print_exc()
@@ -674,18 +702,29 @@ async def stream_answer(
 
             while True:
                 try:
-                    token = token_queue.get(timeout=60)
+                    item = token_queue.get(timeout=60)
                 except queue.Empty:
                     yield f"data: {json.dumps({'type':'error','content':'Stream timed out.'})}\n\n"
                     break
-                if token is None:
+                if item is None:
                     break
                 if error_box:
                     yield f"data: {json.dumps({'type':'error','content':error_box[0]})}\n\n"
                     break
-                full_answer += token
-                yield f"data: {json.dumps({'type':'token','content':token})}\n\n"
+
+                if yield_reasoning and isinstance(item, tuple):
+                    event_type, text = item
+                    if event_type == "reasoning":
+                        yield f"data: {json.dumps({'type':'reasoning','content':text})}\n\n"
+                    else:
+                        full_answer += text
+                        yield f"data: {json.dumps({'type':'token','content':text})}\n\n"
+                else:
+                    token_str = item if isinstance(item, str) else item[1]
+                    full_answer += token_str
+                    yield f"data: {json.dumps({'type':'token','content':token_str})}\n\n"
                 await asyncio.sleep(0)
+
 
         except FileNotFoundError as e:
             yield f"data: {json.dumps({'type':'error','content':str(e)})}\n\n"
@@ -760,8 +799,13 @@ async def chat(
         history  = get_history(conversation_id)
         messages = _build_messages(question, context, history)
 
+        yield_reasoning = request.show_thinking if request.show_thinking is not None else SHOW_THINKING_PROCESS
         t_start  = time.time()
-        answer   = provider.chat(messages, stream=False)
+        chat_result = provider.chat(messages, stream=False, yield_reasoning=yield_reasoning)
+        if yield_reasoning and isinstance(chat_result, tuple):
+            answer, reasoning = chat_result
+        else:
+            answer, reasoning = (chat_result, None) if isinstance(chat_result, str) else (chat_result[0], chat_result[1])
         latency  = round(time.time() - t_start, 2)
 
         # Persist to SQLite
@@ -777,7 +821,9 @@ async def chat(
             sources=sources,
             conversation_id=conversation_id,
             provider=provider.name,
+            reasoning=reasoning,
         )
+
     except (ConnectionError, EnvironmentError, RuntimeError) as e:
         raise HTTPException(status_code=503, detail=str(e))
     except Exception as e:

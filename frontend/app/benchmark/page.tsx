@@ -93,7 +93,7 @@ export default function BenchmarkPage() {
 
     const questions = questionsInput
       .split('\n')
-      .map(q => q.strip ? q.strip() : q.trim())
+      .map(q => q.trim())
       .filter(q => q.length > 0)
 
     if (questions.length === 0) {

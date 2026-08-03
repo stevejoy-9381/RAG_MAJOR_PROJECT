@@ -206,14 +206,14 @@ def rerank(query: str, docs: list) -> list[tuple]:
     scored.sort(key=lambda x: float(x[1]), reverse=True)
 
     # Log the reranking results for comparison
-    print(f"\n[RERANKER] ── Re-ranking results ({rerank_ms:.0f}ms) ──")
+    print(f"\n[RERANKER] -- Re-ranking results ({rerank_ms:.0f}ms) --")
     print(f"[RERANKER] Query: \"{query[:80]}{'...' if len(query) > 80 else ''}\"")
     print(f"[RERANKER] {'Rank':<5} {'Score':>8}  {'Source':<30} {'Page':>5}")
-    print(f"[RERANKER] {'─'*5} {'─'*8}  {'─'*30} {'─'*5}")
+    print(f"[RERANKER] {'-'*5} {'-'*8}  {'-'*30} {'-'*5}")
     for i, (doc, score) in enumerate(scored, 1):
         src = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page", 0) + 1
-        marker = " ✓" if i <= FINAL_CONTEXT_K else " ✗"
+        marker = " [OK]" if i <= FINAL_CONTEXT_K else " [X]"
         print(f"[RERANKER] {i:<5} {float(score):>8.4f}  {src:<30} {page:>5}{marker}")
     print(f"[RERANKER] Keeping top {FINAL_CONTEXT_K} of {len(scored)} candidates ({rerank_ms:.0f}ms latency)")
     print()
@@ -258,7 +258,7 @@ def retrieve_with_rewritten_queries(queries: list[str], user_id: str) -> list:
                 seen.add(key)
                 all_docs.append(doc)
                 new_count += 1
-        print(f"[RETRIEVER] Query {i+1}/{len(queries)}: \"{q[:60]}{'...' if len(q) > 60 else ''}\" → {len(docs)} docs ({new_count} new)")
+        print(f"[RETRIEVER] Query {i+1}/{len(queries)}: \"{q[:60]}{'...' if len(q) > 60 else ''}\" -> {len(docs)} docs ({new_count} new)")
 
     print(f"[RETRIEVER] Multi-query total: {len(all_docs)} unique candidates from {len(queries)} queries")
     return all_docs
@@ -266,7 +266,7 @@ def retrieve_with_rewritten_queries(queries: list[str], user_id: str) -> list:
 
 def retrieve_and_rerank(query: str, user_id: str, queries: list[str] | None = None) -> list:
     """
-    Full retrieval pipeline: retrieve candidates → rerank → return.
+    Full retrieval pipeline: retrieve candidates -> rerank -> return.
 
     Phase 5 addition: when `queries` is provided with >1 entry (from
     query rewriting), fans out retrieval to all queries before reranking.
@@ -290,11 +290,11 @@ def retrieve_and_rerank(query: str, user_id: str, queries: list[str] | None = No
         docs = retriever.invoke(query)
 
     if not RERANKING_ENABLED:
-        print(f"[RETRIEVER] Reranking disabled — returning {len(docs)} docs directly")
+        print(f"[RETRIEVER] Reranking disabled -- returning {len(docs)} docs directly")
         return docs
 
     # Log pre-rerank order for comparison
-    print(f"\n[RETRIEVER] ── Pre-rerank order ({len(docs)} candidates) ──")
+    print(f"\n[RETRIEVER] -- Pre-rerank order ({len(docs)} candidates) --")
     for i, doc in enumerate(docs, 1):
         src = doc.metadata.get("source", "unknown")
         page = doc.metadata.get("page", 0) + 1

@@ -6,6 +6,20 @@
       "email": "",
       "password_hash": "$2b$12$JWi84zaUmshP/5UGYz/DYevUu4n9bMfmc0CzPjN1XB6RLxidkfF3a",
       "created_at": "2026-05-21T04:15:55.193645+00:00"
+    },
+    "testuser_encoding": {
+      "user_id": "398076a4-64ac-44aa-9738-cc6105b76cee",
+      "username": "testuser_encoding",
+      "email": "test@example.com",
+      "password_hash": "$2b$12$Na49NWzcPDNHhPnYIfI3guaAYEjiK3M9bOV0MDV9qjEnc9f5jk6iK",
+      "created_at": "2026-07-25T05:48:31.928096+00:00"
+    },
+    "testuser_verify": {
+      "user_id": "196748e4-4c92-48f6-900b-ac8fbc86c20f",
+      "username": "testuser_verify",
+      "email": "test@verify.com",
+      "password_hash": "$2b$12$5TfA62lgYFNXpOSE7RCZjOn6ueEVYcdKJHBgf7e89YgtBp2E6bgLa",
+      "created_at": "2026-07-28T11:10:54.252603+00:00"
     }
   }
 }

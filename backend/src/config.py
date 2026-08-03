@@ -48,6 +48,18 @@ FINAL_CONTEXT_K = int(os.getenv("FINAL_CONTEXT_K", 4))
 BM25_WEIGHT = float(os.getenv("BM25_WEIGHT", 0.4))
 FAISS_WEIGHT = float(os.getenv("FAISS_WEIGHT", 0.6))
 
+# ─── Groq LLM Configuration ───────────────────────────────────────────────────
+# Single source of truth for Groq cloud LLM provider configuration.
+GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
+GROQ_MODEL = os.getenv("GROQ_MODEL", os.getenv("LLM_MODEL", "qwen/qwen3.6-27b"))
+MODEL_NAME = GROQ_MODEL  # Centralized alias
+
+LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.2"))
+LLM_MAX_TOKENS = int(os.getenv("LLM_MAX_TOKENS", os.getenv("MAX_TOKENS", "1024")))
+LLM_TOP_P = float(os.getenv("LLM_TOP_P", "1.0"))
+
 # ─── Feature Flags ────────────────────────────────────────────────────────────
 RERANKING_ENABLED = os.getenv("RERANKING_ENABLED", "true").lower() in ("true", "1", "yes")
 QUERY_REWRITING_ENABLED = os.getenv("QUERY_REWRITING_ENABLED", "false").lower() in ("true", "1", "yes")
+SHOW_THINKING_PROCESS = os.getenv("SHOW_THINKING_PROCESS", "false").lower() in ("true", "1", "yes")
+

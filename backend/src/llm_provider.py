@@ -30,10 +30,35 @@ from abc import ABC, abstractmethod
 from typing import Generator
 
 import httpx
+import groq
 from groq import Groq
 from dotenv import load_dotenv
 
+from src.config import (
+    GROQ_API_KEY, GROQ_MODEL, MODEL_NAME,
+    LLM_TEMPERATURE, LLM_MAX_TOKENS, LLM_TOP_P,
+)
+
 load_dotenv()
+
+_shared_groq_client: Groq | None = None
+
+
+def _get_shared_groq_client() -> Groq:
+    """Reuse a single Groq client instance across requests for performance."""
+    global _shared_groq_client
+    if _shared_groq_client is None:
+        api_key = GROQ_API_KEY or os.getenv("GROQ_API_KEY")
+        if not api_key:
+            raise EnvironmentError(
+                "GROQ_API_KEY not set. "
+                "Set it in your .env file or use Ollama (offline mode) instead."
+            )
+        _shared_groq_client = Groq(api_key=api_key)
+        print("Groq Provider Connected")
+        print(f"Model: {GROQ_MODEL}")
+    return _shared_groq_client
+
 
 
 # ─── Abstract Base ────────────────────────────────────────────────────────────
@@ -184,25 +209,20 @@ class GroqProvider(LLMProvider):
     """
     Cloud LLM provider via Groq API.
 
-    Wraps the same Groq client logic that was previously inline in api.py's
-    _get_groq_client() and the /stream + /chat endpoints.
+    Uses centralized configuration (qwen/qwen3.6-27b on Groq LPU).
 
     CONFIGURATION:
       GROQ_API_KEY     → required
-      LLM_MODEL        → model name (default llama-3.1-8b-instant)
+      GROQ_MODEL       → model name (default qwen/qwen3.6-27b)
       LLM_TEMPERATURE  → temperature (default 0.2)
     """
 
     def __init__(self):
-        api_key = os.getenv("GROQ_API_KEY")
-        if not api_key:
-            raise EnvironmentError(
-                "GROQ_API_KEY not set. "
-                "Set it in your .env file or use Ollama (offline mode) instead."
-            )
-        self._client = Groq(api_key=api_key)
-        self._model = os.getenv("LLM_MODEL", "llama-3.1-8b-instant")
-        self._temperature = float(os.getenv("LLM_TEMPERATURE", "0.2"))
+        self._client = _get_shared_groq_client()
+        self._model = GROQ_MODEL
+        self._temperature = LLM_TEMPERATURE
+        self._max_tokens = LLM_MAX_TOKENS
+        self._top_p = LLM_TOP_P
 
     @property
     def name(self) -> str:
@@ -212,44 +232,144 @@ class GroqProvider(LLMProvider):
         self,
         messages: list[dict],
         stream: bool = True,
-    ) -> str | Generator[str, None, None]:
+        yield_reasoning: bool = False,
+    ) -> str | tuple[str, str | None] | Generator[str | tuple[str, str], None, None]:
         """
-        Call Groq's chat completions API.
+        Call Groq's chat completions API with detailed error handling.
 
         STREAMING MODE:
           Uses Groq's streaming API — yields delta content tokens.
+          If yield_reasoning=True, yields (type, content) tuples where type is 'reasoning' or 'token'.
 
         NON-STREAMING MODE:
-          Single request, returns the full answer.
+          Single request, returns full answer (or (answer, reasoning) tuple if yield_reasoning=True).
         """
         if stream:
-            return self._stream_chat(messages)
+            return self._stream_chat(messages, yield_reasoning=yield_reasoning)
         else:
-            return self._sync_chat(messages)
+            return self._sync_chat(messages, yield_reasoning=yield_reasoning)
 
-    def _stream_chat(self, messages: list[dict]) -> Generator[str, None, None]:
-        """Stream tokens from Groq."""
-        response = self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            temperature=self._temperature,
-            max_tokens=1024,
-            stream=True,
-        )
-        for chunk in response:
-            delta = chunk.choices[0].delta
-            if delta and delta.content:
-                yield delta.content
+    def _stream_chat(
+        self,
+        messages: list[dict],
+        yield_reasoning: bool = False,
+    ) -> Generator[str | tuple[str, str], None, None]:
+        """Stream tokens from Groq with exception handling and optional reasoning token yielding."""
+        try:
+            response = self._client.chat.completions.create(
+                model=self._model,
+                messages=messages,
+                temperature=self._temperature,
+                max_tokens=self._max_tokens,
+                top_p=self._top_p,
+                stream=True,
+            )
+            in_think = False
+            buffer = ""
+            for chunk in response:
+                if chunk.choices and len(chunk.choices) > 0:
+                    delta = chunk.choices[0].delta
+                    if delta and delta.content:
+                        buffer += delta.content
+                        while buffer:
+                            if not in_think:
+                                if "<think>" in buffer:
+                                    pre, post = buffer.split("<think>", 1)
+                                    if pre:
+                                        yield ("token", pre) if yield_reasoning else pre
+                                    buffer = post
+                                    in_think = True
+                                else:
+                                    yield ("token", buffer) if yield_reasoning else buffer
+                                    buffer = ""
+                                    break
+                            else:
+                                if "</think>" in buffer:
+                                    think_part, post = buffer.split("</think>", 1)
+                                    if think_part and yield_reasoning:
+                                        yield ("reasoning", think_part)
+                                    buffer = post.lstrip("\n")
+                                    in_think = False
+                                else:
+                                    if yield_reasoning and buffer:
+                                        yield ("reasoning", buffer)
+                                        buffer = ""
+                                    break
+            if buffer:
+                if in_think:
+                    if yield_reasoning:
+                        yield ("reasoning", buffer)
+                else:
+                    yield ("token", buffer) if yield_reasoning else buffer
+        except groq.AuthenticationError as e:
+            print(f"[GROQ ERROR] Invalid API key or unauthorized: {e}")
+            raise RuntimeError("Groq API Authentication Error: Invalid API key provided.") from e
+        except groq.RateLimitError as e:
+            print(f"[GROQ ERROR] Rate limit exceeded: {e}")
+            raise RuntimeError("Groq API Rate Limit Exceeded: Please wait a moment and try again.") from e
+        except groq.APIConnectionError as e:
+            print(f"[GROQ ERROR] Connection error: {e}")
+            raise RuntimeError("Groq API Network Error: Could not connect to Groq cloud servers.") from e
+        except groq.APITimeoutError as e:
+            print(f"[GROQ ERROR] Request timeout: {e}")
+            raise RuntimeError("Groq API Timeout: Request to Groq cloud timed out.") from e
+        except groq.APIError as e:
+            print(f"[GROQ ERROR] API error: {e}")
+            raise RuntimeError(f"Groq API Error: {e.message if hasattr(e, 'message') else str(e)}") from e
+        except Exception as e:
+            print(f"[GROQ ERROR] Unexpected error in streaming chat: {e}")
+            raise RuntimeError(f"LLM Provider Error: {str(e)}") from e
 
-    def _sync_chat(self, messages: list[dict]) -> str:
-        """Non-streaming call — returns the full answer string."""
-        response = self._client.chat.completions.create(
-            model=self._model,
-            messages=messages,
-            temperature=self._temperature,
-            max_tokens=1024,
-        )
-        return response.choices[0].message.content
+    def _sync_chat(
+        self,
+        messages: list[dict],
+        yield_reasoning: bool = False,
+    ) -> str | tuple[str, str | None]:
+        """Non-streaming call — returns full answer string (and optional reasoning) with exception handling."""
+        try:
+            response = self._client.chat.completions.create(
+                model=self._model,
+                messages=messages,
+                temperature=self._temperature,
+                max_tokens=self._max_tokens,
+                top_p=self._top_p,
+            )
+            if response.choices and len(response.choices) > 0:
+                content = response.choices[0].message.content
+                if content is not None:
+                    import re
+                    reasoning_str = None
+                    think_match = re.search(r"<think>(.*?)</think>", content, flags=re.DOTALL)
+                    if think_match:
+                        reasoning_str = think_match.group(1).strip()
+                    clean_content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL).strip()
+                    if yield_reasoning:
+                        return clean_content, reasoning_str
+                    return clean_content
+            if yield_reasoning:
+                return "I apologize, but the model returned an empty response.", None
+            return "I apologize, but the model returned an empty response."
+        except groq.AuthenticationError as e:
+            print(f"[GROQ ERROR] Invalid API key or unauthorized: {e}")
+            raise RuntimeError("Groq API Authentication Error: Invalid API key provided.") from e
+        except groq.RateLimitError as e:
+            print(f"[GROQ ERROR] Rate limit exceeded: {e}")
+            raise RuntimeError("Groq API Rate Limit Exceeded: Please wait a moment and try again.") from e
+        except groq.APIConnectionError as e:
+            print(f"[GROQ ERROR] Connection error: {e}")
+            raise RuntimeError("Groq API Network Error: Could not connect to Groq cloud servers.") from e
+        except groq.APITimeoutError as e:
+            print(f"[GROQ ERROR] Request timeout: {e}")
+            raise RuntimeError("Groq API Timeout: Request to Groq cloud timed out.") from e
+        except groq.APIError as e:
+            print(f"[GROQ ERROR] API error: {e}")
+            raise RuntimeError(f"Groq API Error: {e.message if hasattr(e, 'message') else str(e)}") from e
+        except Exception as e:
+            print(f"[GROQ ERROR] Unexpected error in sync chat: {e}")
+            raise RuntimeError(f"LLM Provider Error: {str(e)}") from e
+
+
+
 
 
 # ─── Factory + Availability ──────────────────────────────────────────────────
@@ -274,8 +394,9 @@ def check_provider_availability() -> dict[str, bool]:
     """
     return {
         "ollama": _is_ollama_reachable(),
-        "groq": bool(os.getenv("GROQ_API_KEY")),
+        "groq": bool(GROQ_API_KEY or os.getenv("GROQ_API_KEY")),
     }
+
 
 
 def get_provider(preference: str | None = None) -> LLMProvider:

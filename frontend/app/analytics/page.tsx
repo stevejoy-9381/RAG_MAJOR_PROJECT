@@ -12,6 +12,15 @@ import { clsx } from 'clsx'
 import { auth } from '@/lib/auth'
 import { getAnalyticsSummary } from '@/lib/api'
 import type { AnalyticsSummary } from '@/types'
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+} from 'recharts'
 
 export default function AnalyticsPage() {
   const router = useRouter()
@@ -43,10 +52,6 @@ export default function AnalyticsPage() {
       setLoading(false)
     }
   }
-
-  const maxDailyQuestions = data?.usage_over_time
-    ? Math.max(...data.usage_over_time.map(d => d.questions), 1)
-    : 1
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
@@ -160,26 +165,38 @@ export default function AnalyticsPage() {
                   </div>
                 </div>
 
-                <div className="h-44 flex items-end justify-between gap-1.5 pt-4 px-2">
-                  {data.usage_over_time.map((dp) => {
-                    const heightPercent = maxDailyQuestions > 0 ? (dp.questions / maxDailyQuestions) * 100 : 0
-                    const formattedDate = dp.date.slice(5) // MM-DD
-                    return (
-                      <div key={dp.date} className="flex-1 flex flex-col items-center gap-1.5 h-full justify-end group">
-                        <div className="text-[10px] font-semibold text-slate-500 opacity-0 group-hover:opacity-100 transition-opacity">
-                          {dp.questions}
-                        </div>
-                        <div
-                          style={{ height: `${Math.max(heightPercent, 4)}%` }}
-                          className={clsx(
-                            "w-full rounded-t-lg transition-all",
-                            dp.questions > 0 ? "bg-emerald-500 group-hover:bg-emerald-600 shadow-sm" : "bg-slate-100"
-                          )}
-                        />
-                        <span className="text-[10px] text-slate-400 truncate w-full text-center">{formattedDate}</span>
-                      </div>
-                    )
-                  })}
+                <div className="h-52 w-full pt-2">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <BarChart data={data.usage_over_time} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                      <XAxis
+                        dataKey="date"
+                        tickFormatter={(val: string) => (val ? val.slice(5) : '')}
+                        tick={{ fontSize: 11, fill: '#94a3b8' }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <YAxis
+                        allowDecimals={false}
+                        tick={{ fontSize: 11, fill: '#94a3b8' }}
+                        axisLine={false}
+                        tickLine={false}
+                      />
+                      <Tooltip
+                        cursor={{ fill: '#f8fafc' }}
+                        contentStyle={{
+                          backgroundColor: '#ffffff',
+                          borderColor: '#e2e8f0',
+                          borderRadius: '0.75rem',
+                          fontSize: '12px',
+                          boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)',
+                        }}
+                        formatter={(value: number) => [`${value} questions`, 'Questions']}
+                        labelFormatter={(label: string) => `Date: ${label}`}
+                      />
+                      <Bar dataKey="questions" fill="#10b981" radius={[4, 4, 0, 0]} maxBarSize={40} />
+                    </BarChart>
+                  </ResponsiveContainer>
                 </div>
               </div>
 

@@ -63,16 +63,16 @@ def _load_registry() -> dict:
     if not os.path.exists(USER_REGISTRY_PATH):
         return {"users": {}}
     try:
-        with open(USER_REGISTRY_PATH, "r") as f:
+        with open(USER_REGISTRY_PATH, "r", encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, IOError):
-        print("[USERS] ⚠️  User registry corrupted. Starting fresh.")
+        print("[USERS] [WARN] User registry corrupted. Starting fresh.")
         return {"users": {}}
 
 
 def _save_registry(registry: dict) -> None:
     os.makedirs(os.path.dirname(USER_REGISTRY_PATH), exist_ok=True)
-    with open(USER_REGISTRY_PATH, "w") as f:
+    with open(USER_REGISTRY_PATH, "w", encoding="utf-8") as f:
         json.dump(registry, f, indent=2)
 
 

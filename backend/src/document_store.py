@@ -30,7 +30,7 @@ def _load_registry(user_id: str) -> dict:
     if not os.path.exists(path):
         return {"documents": []}
     try:
-        with open(path, "r") as f:
+        with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except (json.JSONDecodeError, IOError):
         return {"documents": []}
@@ -39,7 +39,7 @@ def _load_registry(user_id: str) -> dict:
 def _save_registry(user_id: str, registry: dict) -> None:
     path = _get_registry_path(user_id)
     os.makedirs(os.path.dirname(path), exist_ok=True)
-    with open(path, "w") as f:
+    with open(path, "w", encoding="utf-8") as f:
         json.dump(registry, f, indent=2)
 
 

@@ -12,8 +12,7 @@
 #
 # WHAT THIS DEPLOYS:
 #   One Web Service (the FastAPI API) with a persistent disk for user data.
-#   The Streamlit frontend deploys separately to Streamlit Community Cloud.
-#   (Render can host both but Streamlit Cloud is free and purpose-built.)
+#   The Next.js frontend is a separate application deployed on Vercel (see RAG-FRONTEND-main).
 #
 # FREE TIER NOTE:
 #   Render's free tier spins down after 15 minutes of inactivity.
@@ -41,8 +40,8 @@ services:
     envVars:
       - key: PYTHONUNBUFFERED
         value: "1"
-      - key: LLM_MODEL
-        value: "llama3-8b-8192"
+      - key: GROQ_MODEL
+        value: "qwen/qwen3.6-27b"
       - key: LLM_TEMPERATURE
         value: "0.2"
       - key: RETRIEVAL_K

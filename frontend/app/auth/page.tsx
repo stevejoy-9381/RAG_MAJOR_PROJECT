@@ -54,7 +54,7 @@ export default function AuthPage() {
     { icon: FileText, text: 'Upload any PDF document'       },
     { icon: Zap,      text: 'Stream answers in real time'   },
     { icon: Shield,   text: 'Your documents stay private'   },
-    { icon: Brain,    text: 'Powered by Llama 3 + FAISS'    },
+    { icon: Brain,    text: 'Powered by Qwen 3.6 27B + FAISS' },
   ]
 
   return (

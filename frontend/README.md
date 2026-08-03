@@ -49,7 +49,7 @@
 
 **DocMind** is a production-ready **Retrieval-Augmented Generation (RAG)** application that turns your static PDF documents into an interactive, AI-powered knowledge base.
 
-Instead of asking a generic LLM that might hallucinate, DocMind retrieves the most relevant chunks from *your specific documents* and feeds them as context to Llama 3 — so every answer is grounded in what's actually written in your files, with exact page-level citations.
+Instead of asking a generic LLM that might hallucinate, DocMind retrieves the most relevant chunks from *your specific documents* and feeds them as context to Qwen 3.6 27B — so every answer is grounded in what's actually written in your files, with exact page-level citations.
 
 Built as a full-stack project demonstrating real-world AI engineering: vector search, hybrid retrieval, streaming LLM responses, JWT authentication, and per-user document isolation.
 
@@ -90,7 +90,7 @@ Built as a full-stack project demonstrating real-world AI engineering: vector se
 | **LangChain** | RAG pipeline orchestration |
 | **FAISS** | Facebook AI Similarity Search — vector store |
 | **HuggingFace Transformers** | `all-MiniLM-L6-v2` sentence embeddings |
-| **Groq API** | Ultra-fast Llama 3.1 8B inference |
+| **Groq API** | Ultra-fast Qwen 3.6 27B inference |
 | **BM25Retriever** | Keyword-based retrieval (sparse) |
 | **EnsembleRetriever** | Hybrid BM25 + FAISS weighted retrieval |
 | **PyMuPDF** | PDF loading and text extraction |
@@ -142,10 +142,10 @@ Built as a full-stack project demonstrating real-world AI engineering: vector se
 │                           │               └──────┬──────┘       │
 │                    ┌──────▼──────┐               │              │
 │                    │ Per-User    │        ┌──────▼──────┐       │
-│                    │ FAISS Index │        │  Groq LLM   │       │
-│                    │ vectorstore/│        │  Llama 3.1  │       │
-│                    │ {user_id}/  │        │  Streaming  │       │
-│                    └─────────────┘        └─────────────┘       │
+│                    │ vectorstore/│        │  Qwen 3.6   │       │
+│                    │ {user_id}/  │        │  27B        │       │
+│                    └─────────────┘        │  Streaming  │       │
+│                                           └─────────────┘       │
 └──────────────────────────────────────────────────────────────────┘
 ```
 
@@ -176,7 +176,7 @@ EnsembleRetriever → BM25 (0.4 weight) + FAISS (0.6 weight) → Top-4 chunks
 LangChain RetrievalQA → Prompt Template + Context + Question
     │
     ▼
-Groq API (Llama 3.1 8B) → Streamed tokens via SSE → Frontend
+Groq API (Qwen 3.6 27B) → Streamed tokens via SSE → Frontend
 ```
 
 ---
@@ -321,7 +321,7 @@ GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 JWT_SECRET_KEY=your_long_random_secret_string_at_least_32_chars
 
 # Optional (defaults shown)
-LLM_MODEL=llama-3.1-8b-instant
+GROQ_MODEL=qwen/qwen3.6-27b
 LLM_TEMPERATURE=0.2
 CHUNK_SIZE=800
 CHUNK_OVERLAP=100
@@ -412,7 +412,7 @@ When a question is asked:
 ### 3. Generation
 
 1. The 4 retrieved chunks + conversation history + user question are assembled into a prompt
-2. The prompt is sent to **Groq API** (Llama 3.1 8B)
+2. The prompt is sent to **Groq API** (Qwen 3.6 27B)
 3. Response tokens stream back via **SSE** to the frontend in real time
 4. Once complete, source citations (file, page, preview) are sent as metadata
 5. The exchange is saved to in-memory session history (sliding window of last 4 turns)

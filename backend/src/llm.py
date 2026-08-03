@@ -25,45 +25,43 @@ from langchain.prompts import PromptTemplate
 load_dotenv()
 
 
+from src.config import (
+    GROQ_API_KEY, GROQ_MODEL, MODEL_NAME,
+    LLM_TEMPERATURE, LLM_MAX_TOKENS, LLM_TOP_P,
+)
+
+
 def get_llm() -> ChatGroq:
     """
-    Create and return a Groq LLM client.
+    Create and return a Groq LLM client using centralized configuration.
 
-    WHY GROQ?
-      - Free tier: 14,400 requests/day, no credit card for signup
-      - Fast: Groq runs on custom LPU hardware → ~500 tokens/second
-        (OpenAI GPT-4 is ~50 tokens/second for comparison)
-      - Llama3-8B quality: very good for factual Q&A from context
-
-    WHY temperature=0.2?
-      Temperature controls randomness:
-        0.0 → always picks the most likely next token (fully deterministic)
-        1.0 → very creative/random
-        0.2 → mostly deterministic with tiny variance
-      For a Q&A system grounded in documents, low temperature = factual answers.
-      We do NOT want the model being "creative" — we want it to report facts.
-
-    COMMON ERROR:
-      AuthenticationError → your GROQ_API_KEY is missing or wrong.
-      Fix: check your .env file has the correct key from console.groq.com
+    Model: qwen/qwen3.6-27b on Groq Cloud LPU.
     """
-    api_key = os.getenv("GROQ_API_KEY")
+    api_key = GROQ_API_KEY or os.getenv("GROQ_API_KEY")
     if not api_key:
         raise EnvironmentError(
             "GROQ_API_KEY not found. "
-            "Did you create a .env file from .env.example?"
+            "Did you set it in your .env file?"
         )
 
-    model_name = os.getenv("LLM_MODEL", "llama-3.1-8b-instant")
-    temperature = float(os.getenv("LLM_TEMPERATURE", "0.2"))
+    model_name = GROQ_MODEL
+    temperature = LLM_TEMPERATURE
 
-    llm = ChatGroq(
-        api_key=api_key,
-        model=model_name,
-        temperature=temperature,
-    )
-    print(f"[LLM] Using Groq model: {model_name} (temperature={temperature})")
-    return llm
+    try:
+        llm = ChatGroq(
+            api_key=api_key,
+            model_name=model_name,
+            temperature=temperature,
+            max_tokens=LLM_MAX_TOKENS,
+        )
+        print("Groq Provider Connected")
+        print(f"Model: {model_name}")
+        return llm
+
+    except Exception as e:
+        print(f"[LLM ERROR] Failed to initialize ChatGroq ({model_name}): {e}")
+        raise RuntimeError(f"Failed to initialize Groq LLM provider: {e}") from e
+
 
 
 def get_prompt_template() -> PromptTemplate:
@@ -97,7 +95,7 @@ def get_prompt_template() -> PromptTemplate:
       (page number, source) so the model can reference them.
 
     THE {question} PLACEHOLDER:
-      Filled with whatever the user typed in the Streamlit text box.
+      Filled with whatever the user typed in the chat input.
     """
     template = """You are a precise document Q&A assistant.
 

@@ -121,7 +121,13 @@ curl http://localhost:8000/health
 ### Cloud LLM Setup (Groq)
 
 1. Get a free API key from [console.groq.com](https://console.groq.com)
-2. Add to `.env`: `GROQ_API_KEY=your_key_here`
+2. Add to `.env`:
+   ```env
+   GROQ_API_KEY=your_key_here
+   GROQ_MODEL=qwen/qwen3.6-27b
+   ```
+3. To change models on Groq, update the `GROQ_MODEL` environment variable in `.env` (e.g. `GROQ_MODEL=qwen/qwen3.6-27b`).
+
 
 ### Per-Request Provider Selection
 

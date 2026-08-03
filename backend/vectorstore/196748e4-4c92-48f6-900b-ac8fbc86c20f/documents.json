@@ -1,0 +1,11 @@
+{
+  "documents": [
+    {
+      "filename": "test_doc.txt",
+      "uploaded_at": "2026-07-28T11:16:54.014095+00:00",
+      "pages": 1,
+      "chunks": 1,
+      "size_kb": 0.4
+    }
+  ]
+}

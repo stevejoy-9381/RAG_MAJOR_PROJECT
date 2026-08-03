@@ -67,7 +67,7 @@ def _ocr_page(file_path: str, page_num: int) -> str | None:
         from PIL import Image
         import fitz  # PyMuPDF
     except ImportError as e:
-        print(f"[INGEST] ⚠ OCR dependencies missing ({e}). Skipping OCR.")
+        print(f"[INGEST] [WARN] OCR dependencies missing ({e}). Skipping OCR.")
         return None
 
     try:
@@ -91,12 +91,12 @@ def _ocr_page(file_path: str, page_num: int) -> str | None:
         # Catch Tesseract not installed, corrupt pages, memory issues, etc.
         error_msg = str(e)
         if "tesseract" in error_msg.lower() or "not installed" in error_msg.lower():
-            print(f"[INGEST] ⚠ Tesseract not installed. Install with:")
+            print(f"[INGEST] [WARN] Tesseract not installed. Install with:")
             print(f"[INGEST]   Windows: Download from https://github.com/UB-Mannheim/tesseract/wiki")
             print(f"[INGEST]   Linux:   apt-get install tesseract-ocr")
             print(f"[INGEST]   macOS:   brew install tesseract")
         else:
-            print(f"[INGEST] ⚠ OCR failed for page {page_num + 1}: {e}")
+            print(f"[INGEST] [WARN] OCR failed for page {page_num + 1}: {e}")
         return None
 
 
