@@ -109,7 +109,10 @@ from src.analytics import get_analytics_summary
 load_dotenv()
 
 # ─── Feature flags config ─────────────────────────────────────────────────────────
-from src.config import QUERY_REWRITING_ENABLED, SHOW_THINKING_PROCESS
+from src.config import QUERY_REWRITING_ENABLED, SHOW_THINKING_PROCESS, MAX_UPLOAD_SIZE_BYTES
+from src.logger import get_logger, log_error, log_event, Timer
+
+logger = get_logger("API")
 
 
 # ─── App setup ────────────────────────────────────────────────────────────────
@@ -462,14 +465,13 @@ async def upload_document(
 ):
     """
     Upload and index a document for the authenticated user.
-
-    Supported formats: .pdf, .docx, .pptx, .txt, .csv
-    The file extension is checked against ALLOWED_EXTENSIONS from ingest.py.
-    The temp file preserves the original extension so the format dispatcher
-    in load_document() can detect the type.
+    Supports .pdf, .docx, .pptx, .txt, .csv, .xlsx, .xls
+    Enforces path traversal protection and max upload file size (100MB).
     """
     user_id = user["user_id"]
-    file_ext = Path(file.filename).suffix.lower()
+    # Path traversal protection: extract basename only
+    safe_filename = Path(file.filename).name if file.filename else "uploaded_document"
+    file_ext = Path(safe_filename).suffix.lower()
 
     if file_ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
@@ -477,41 +479,53 @@ async def upload_document(
             detail=f"Unsupported file type: '{file_ext}'. Supported: {', '.join(sorted(ALLOWED_EXTENSIONS))}",
         )
 
-    was_dup = is_duplicate(user_id, file.filename)
-    print(f"[API] user='{user['username']}' upload='{file.filename}'")
+    file_bytes = await file.read()
+    file_size = len(file_bytes)
+
+    if file_size > MAX_UPLOAD_SIZE_BYTES:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File size ({file_size / (1024*1024):.1f} MB) exceeds maximum allowed limit of {MAX_UPLOAD_SIZE_BYTES / (1024*1024):.0f} MB.",
+        )
+
+    was_dup = is_duplicate(user_id, safe_filename)
+    logger.info(f"Upload request: user='{user['username']}' file='{safe_filename}' ({file_size / 1024:.1f} KB)")
 
     with tempfile.NamedTemporaryFile(delete=False, suffix=file_ext) as tmp:
-        tmp.write(await file.read())
+        tmp.write(file_bytes)
         tmp_path = tmp.name
 
     try:
-        result = run_ingestion(
-            file_path=tmp_path,
-            user_id=user_id,
-            original_filename=file.filename,
-        )
-        # Invalidate this user's cached retriever so next request rebuilds
+        with Timer(f"Ingest '{safe_filename}'", component="API_UPLOAD"):
+            result = run_ingestion(
+                file_path=tmp_path,
+                user_id=user_id,
+                original_filename=safe_filename,
+            )
+        
         invalidate_user_cache(user_id)
-
         all_docs = get_all_documents(user_id)
+
         return UploadResponse(
             status="success",
-            file=file.filename,
+            file=safe_filename,
             pages=result["pages"],
             chunks=result["chunks"],
             was_duplicate=was_dup,
             message=(
-                f"✓ {'Updated' if was_dup else 'Indexed'} '{file.filename}'. "
+                f"✓ {'Updated' if was_dup else 'Indexed'} '{safe_filename}'. "
                 f"{result['pages']} pages → {result['chunks']} chunks. "
                 f"{len(all_docs)} document(s) in your library."
             ),
             total_documents=len(all_docs),
         )
     except Exception as e:
+        log_error("API_UPLOAD", f"Ingestion failed for '{safe_filename}'", e)
         raise HTTPException(status_code=500, detail=f"Ingestion failed: {str(e)}")
     finally:
         if os.path.exists(tmp_path):
             os.unlink(tmp_path)
+
 
 
 @app.delete("/documents/{filename}")
@@ -691,25 +705,26 @@ async def stream_answer(
                     for item in provider.chat(messages, stream=True, yield_reasoning=yield_reasoning):
                         token_queue.put(item)
                 except Exception as e:
-                    import traceback
-                    traceback.print_exc()
-                    print(f"STREAM ERROR ({provider_name}):", repr(e))
+                    log_error("STREAM", f"Error in stream producer ({provider_name})", e)
                     error_box.append(str(e))
                 finally:
                     token_queue.put(None)
 
             threading.Thread(target=producer, daemon=True).start()
 
+            has_error = False
             while True:
                 try:
                     item = token_queue.get(timeout=60)
                 except queue.Empty:
-                    yield f"data: {json.dumps({'type':'error','content':'Stream timed out.'})}\n\n"
+                    has_error = True
+                    yield f"data: {json.dumps({'type':'error','content':'Stream generation timed out.'})}\n\n"
                     break
                 if item is None:
                     break
                 if error_box:
-                    yield f"data: {json.dumps({'type':'error','content':error_box[0]})}\n\n"
+                    has_error = True
+                    yield f"data: {json.dumps({'type':'error','content':f'Provider error: {error_box[0]}'})}\n\n"
                     break
 
                 if yield_reasoning and isinstance(item, tuple):
@@ -725,29 +740,30 @@ async def stream_answer(
                     yield f"data: {json.dumps({'type':'token','content':token_str})}\n\n"
                 await asyncio.sleep(0)
 
-
         except FileNotFoundError as e:
+            has_error = True
+            log_error("STREAM", "Document index not found", e)
             yield f"data: {json.dumps({'type':'error','content':str(e)})}\n\n"
             yield "data: [DONE]\n\n"
             return
         except Exception as e:
-            yield f"data: {json.dumps({'type':'error','content':f'Error: {str(e)}'})}\n\n"
+            has_error = True
+            log_error("STREAM", "Unhandled stream exception", e)
+            yield f"data: {json.dumps({'type':'error','content':f'Stream error: {str(e)}'})}\n\n"
             yield "data: [DONE]\n\n"
             return
 
-        if full_answer:
+        if full_answer and not has_error:
             latency = round(time.time() - t_start, 2)
-            # Persist to SQLite (source of truth)
             add_message(conversation_id, "user", question)
             sources = format_sources(docs)
             add_message(conversation_id, "assistant", full_answer,
                         sources=sources, provider=provider_name, latency_seconds=latency)
-            # Update in-memory cache for subsequent requests
             add_exchange(conversation_id, question, full_answer)
-        else:
-            sources = format_sources(docs)
+            yield f"data: {json.dumps({'type':'metadata','sources':sources,'conversation_id':conversation_id,'provider':provider_name})}\n\n"
+        elif not has_error:
+            yield f"data: {json.dumps({'type':'error','content':'The AI model returned an empty response. Please try again.'})}\n\n"
 
-        yield f"data: {json.dumps({'type':'metadata','sources':sources,'conversation_id':conversation_id,'provider':provider_name})}\n\n"
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(
@@ -755,6 +771,7 @@ async def stream_answer(
         media_type="text/event-stream",
         headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"},
     )
+
 
 
 # ─── Non-streaming chat (protected) ──────────────────────────────────────────

@@ -217,15 +217,29 @@ export default function ChatPage() {
     } catch {}
   }
 
+  // ── Abort controller for stream cancellation ────────────────────────────────
+  const abortControllerRef = useRef<AbortController | null>(null)
+
+  function handleCancelGeneration() {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+      setStreaming(false)
+    }
+  }
+
   // ── Submit question ───────────────────────────────────────────────────────
-  async function handleSubmit(e?: React.FormEvent) {
+  async function handleSubmit(e?: React.FormEvent, overrideQuestion?: string) {
     e?.preventDefault()
-    const question = input.trim()
+    const question = (overrideQuestion || input).trim()
     if (!question || !token || streaming) return
     if (!status?.ready) return
 
     setInput('')
     setStreaming(true)
+
+    const controller = new AbortController()
+    abortControllerRef.current = controller
 
     // Add user message
     const userMsg: Message = {
@@ -245,15 +259,16 @@ export default function ChatPage() {
     let   fullContent = ''
     let   finalSources: Source[] = []
     let   resolvedProvider: Message['provider'] = undefined
+    let   hasError = false
 
     await streamAnswer({
       question,
       conversationId: conversationId ?? undefined,
       llmMode,
       token,
+      signal: controller.signal,
       onToken(t) {
         fullContent += t
-        // Update the placeholder message with each new token
         setMessages(prev => prev.map(m =>
           m.id === assistantId ? { ...m, content: fullContent } : m
         ))
@@ -261,12 +276,12 @@ export default function ChatPage() {
       onMetadata(sources, newConversationId, provider) {
         finalSources = sources
         resolvedProvider = provider as Message['provider']
-        // If backend auto-created the conversation, adopt the ID
         if (newConversationId && newConversationId !== conversationId) {
           setConversationId(newConversationId)
         }
       },
       onError(msg) {
+        hasError = true
         setMessages(prev => prev.map(m =>
           m.id === assistantId
             ? { ...m, content: `⚠️ ${msg}`, isStreaming: false, error: true }
@@ -274,29 +289,37 @@ export default function ChatPage() {
         ))
       },
       onDone() {
-        // Finalise the assistant message: mark streaming done, attach sources + provider
-        setMessages(prev => prev.map(m =>
-          m.id === assistantId
-            ? {
-                ...m,
-                content: fullContent || m.content,
-                sources: finalSources,
-                isStreaming: false,
-                provider: resolvedProvider,
-              }
-            : m
-        ))
+        abortControllerRef.current = null
+        setMessages(prev => prev.map(m => {
+          if (m.id !== assistantId) return m
+          const finalContent = fullContent || (hasError ? m.content : '⚠️ I could not generate a response. Please try again.')
+          return {
+            ...m,
+            content: finalContent,
+            sources: finalSources,
+            isStreaming: false,
+            provider: resolvedProvider,
+            error: hasError || !fullContent,
+          }
+        }))
         setStreaming(false)
         refreshConversations()
         inputRef.current?.focus()
 
-        // Auto-read hands-free feature
-        if (autoReadRef.current && fullContent) {
+        if (autoReadRef.current && fullContent && !hasError) {
           speakText(fullContent)
         }
       },
     })
   }
+
+  function handleRetry() {
+    const lastUserMsg = [...messages].reverse().find(m => m.role === 'user')
+    if (lastUserMsg && lastUserMsg.content) {
+      handleSubmit(undefined, lastUserMsg.content)
+    }
+  }
+
 
   // ── Handle Enter key (Shift+Enter = newline) ──────────────────────────────
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
@@ -364,12 +387,21 @@ export default function ChatPage() {
           <span className="font-semibold text-slate-800">Document Q&A</span>
 
           {streaming && (
-            <span className="ml-auto flex items-center gap-2 text-xs text-indigo-600 font-medium">
-              <span className="typing-dots flex gap-0.5">
-                <span /><span /><span />
+            <div className="ml-auto flex items-center gap-3">
+              <span className="flex items-center gap-2 text-xs text-indigo-600 font-medium">
+                <span className="typing-dots flex gap-0.5">
+                  <span /><span /><span />
+                </span>
+                Generating…
               </span>
-              Generating…
-            </span>
+              <button
+                onClick={handleCancelGeneration}
+                className="px-2.5 py-1 text-xs font-medium bg-red-50 text-red-600 hover:bg-red-100 rounded-lg border border-red-200 transition-colors"
+                title="Cancel active stream generation"
+              >
+                ⏹ Stop
+              </button>
+            </div>
           )}
         </header>
 
@@ -415,8 +447,9 @@ export default function ChatPage() {
 
           {/* Rendered messages */}
           {hasMessages && messages.map(msg => (
-            <ChatMessage key={msg.id} message={msg} />
+            <ChatMessage key={msg.id} message={msg} onRetry={handleRetry} />
           ))}
+
           <div ref={bottomRef} />
         </div>
 

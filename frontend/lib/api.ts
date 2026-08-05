@@ -170,29 +170,36 @@ export async function streamAnswer(params: {
   conversationId?: string
   llmMode?:        LLMMode
   token:           string
+  signal?:         AbortSignal
   onToken:         (token: string) => void
   onMetadata:      (sources: Source[], conversationId: string, provider: string) => void
   onError:         (message: string) => void
   onDone:          () => void
 }): Promise<void> {
-  const { question, conversationId, llmMode, token, onToken, onMetadata, onError, onDone } = params
+  const { question, conversationId, llmMode, token, signal, onToken, onMetadata, onError, onDone } = params
 
   let response: Response
   try {
     response = await fetch(`${API_URL}/stream`, {
       method:  'POST',
       headers: authHeaders(token),
+      signal,
       body:    JSON.stringify({
         question,
         conversation_id: conversationId ?? undefined,
         llm_mode: llmMode ?? 'auto',
       }),
     })
-  } catch {
-    onError('Cannot connect to the backend. Is the API running?')
+  } catch (err: any) {
+    if (err?.name === 'AbortError') {
+      onError('Generation cancelled by user.')
+    } else {
+      onError('Cannot connect to the backend. Is the API running?')
+    }
     onDone()
     return
   }
+
 
   if (!response.ok) {
     let msg = `HTTP ${response.status}`

@@ -1,29 +1,17 @@
 """
 src/retriever.py — Per-User Hybrid Retrieval + Re-ranking + Multi-Query
 ─────────────────────────────────────────────────────────────────────────
-PIPELINE EVOLUTION:
-
-  Phase 3: EnsembleRetriever returned RETRIEVAL_K docs → used directly.
-  Phase 4: Retrieve RETRIEVAL_CANDIDATES → CrossEncoder rerank → FINAL_CONTEXT_K.
-  Phase 5: Optional query rewriting → fan-out retrieval for EACH query →
-           merge + deduplicate → CrossEncoder rerank → FINAL_CONTEXT_K.
-
-  The Phase 5 multi-query path is triggered when retrieve_and_rerank()
-  receives a `queries` list with >1 entry (produced by query_rewriter.py).
-  When queries is None or a single item, behavior is identical to Phase 4.
-
-  ESCAPE HATCHES:
-    RERANKING_ENABLED=false  → bypass CrossEncoder (Phase 3 behavior)
-    QUERY_REWRITING_ENABLED  → controlled in api.py (this module just
-                                accepts whatever queries it's given)
+Combines dense FAISS vector search and sparse BM25 keyword matching,
+uses SHA-256 candidate deduplication, CrossEncoder re-ranking, and
+integrates structured logging with process-wide embedding singletons.
 """
 
 from __future__ import annotations
 import os
 import time
+import hashlib
+from typing import List, Dict, Tuple, Optional, Any
 
-# Prevent transformers from trying to import TensorFlow/Keras at import time.
-# We only use PyTorch-based models (CrossEncoder, HuggingFaceEmbeddings).
 os.environ.setdefault("TRANSFORMERS_NO_TF", "1")
 
 from langchain_community.embeddings import HuggingFaceEmbeddings
@@ -31,109 +19,66 @@ from langchain_community.vectorstores import FAISS
 from langchain_community.retrievers import BM25Retriever
 from langchain.retrievers import EnsembleRetriever
 from langchain.chains import RetrievalQA
+from langchain.schema import Document
 
 from src.llm import get_llm, get_prompt_template
-from src.ingest import get_user_index_path
-
-
-# ─── Configuration ────────────────────────────────────────────────────────────
-
-from src.llm import get_llm, get_prompt_template
-from src.ingest import get_user_index_path
+from src.ingest import get_user_index_path, get_embedding_model
 from src.config import (
     EMBEDDING_MODEL, RERANKER_MODEL,
     RETRIEVAL_K, RETRIEVAL_CANDIDATES, FINAL_CONTEXT_K,
     BM25_WEIGHT, FAISS_WEIGHT, RERANKING_ENABLED,
 )
+from src.logger import get_logger, log_event, Timer
 
+logger = get_logger("RETRIEVER")
 
-# ─── Cache ────────────────────────────────────────────────────────────────────
-# Embedding model: shared across all users (one model, identical weights)
-# Retriever: per-user dict — each user's key stores their EnsembleRetriever
-# CrossEncoder: shared across all users (one model, stateless scoring)
-_embedding_model_cache: HuggingFaceEmbeddings | None = None
-_cross_encoder_cache = None  # CrossEncoder instance (lazy-imported to avoid TF/Keras)
-_retriever_cache: dict[str, EnsembleRetriever] = {}   # {user_id: retriever}
+_cross_encoder_cache = None
+_retriever_cache: Dict[str, EnsembleRetriever] = {}
 
 
 def invalidate_user_cache(user_id: str) -> None:
-    """
-    Remove this user's cached retriever.
-    Called after they upload a new document or delete one.
-    The next request rebuilds the retriever from the updated index.
-    """
+    """Remove user's cached retriever after document modifications."""
     if user_id in _retriever_cache:
         del _retriever_cache[user_id]
-        print(f"[RETRIEVER] Cache invalidated for user '{user_id[:8]}'")
+        logger.info(f"Cache invalidated for user '{user_id[:8]}'")
 
 
 def _get_embedding_model() -> HuggingFaceEmbeddings:
-    """Load embedding model once, reuse for all users."""
-    global _embedding_model_cache
-    if _embedding_model_cache is None:
-        print(f"[RETRIEVER] Loading embedding model...")
-        _embedding_model_cache = HuggingFaceEmbeddings(
-            model_name=EMBEDDING_MODEL,
-            model_kwargs={"device": "cpu"},
-            encode_kwargs={"normalize_embeddings": True},
-        )
-        print("[RETRIEVER] Embedding model loaded and cached.")
-    return _embedding_model_cache
+    """Delegate to process-wide singleton embedding model in ingest.py."""
+    return get_embedding_model()
 
 
-def _get_cross_encoder() -> CrossEncoder:
-    """
-    Load the CrossEncoder reranker model once, reuse for all users.
-
-    Uses the same caching pattern as _get_embedding_model().
-    The model is ~80MB and runs inference on CPU — fast enough for
-    re-scoring 10-20 short document passages per query (~50-100ms).
-    """
+def _get_cross_encoder():
+    """Load CrossEncoder reranker model once and cache."""
     global _cross_encoder_cache
     if _cross_encoder_cache is None:
-        # Lazy import: avoids triggering transformers → TensorFlow → Keras
-        # import chain at module load time. Only needed when reranking is
-        # actually used (first call to rerank()).
         from sentence_transformers import CrossEncoder
-        print(f"[RETRIEVER] Loading CrossEncoder reranker ({RERANKER_MODEL})...")
+        logger.info(f"Loading CrossEncoder reranker model ({RERANKER_MODEL})...")
         _cross_encoder_cache = CrossEncoder(RERANKER_MODEL)
-        print("[RETRIEVER] CrossEncoder loaded and cached.")
+        logger.info("CrossEncoder reranker model ready.")
     return _cross_encoder_cache
 
 
 def _check_user_index(user_id: str) -> None:
-    """Raise a clear error if this user has no FAISS index yet."""
+    """Ensure user's FAISS index exists before retrieving."""
     index_path = get_user_index_path(user_id)
     if not os.path.exists(os.path.join(index_path, "index.faiss")):
         raise FileNotFoundError(
             "You haven't uploaded any documents yet. "
-            "Upload a PDF first to start asking questions."
+            "Upload a document first to ask questions."
         )
 
 
 def get_hybrid_retriever(user_id: str) -> EnsembleRetriever:
-    """
-    Return the hybrid BM25 + FAISS retriever for a specific user.
-
-    CACHE HIT:   return cached retriever for this user instantly
-    CACHE MISS:  build retriever from this user's FAISS index, cache it
-
-    When RERANKING_ENABLED=true, the retriever fetches RETRIEVAL_CANDIDATES
-    docs (a larger pool). The caller is responsible for passing these through
-    rerank() to narrow down to FINAL_CONTEXT_K.
-
-    When RERANKING_ENABLED=false, the retriever fetches RETRIEVAL_K docs
-    directly (the pre-Phase 4 behavior).
-    """
+    """Return cached or newly built BM25 + FAISS EnsembleRetriever for user."""
     _check_user_index(user_id)
 
     if user_id in _retriever_cache:
         return _retriever_cache[user_id]
 
-    # Decide how many candidates to retrieve
     k = RETRIEVAL_CANDIDATES if RERANKING_ENABLED else RETRIEVAL_K
+    logger.info(f"Building hybrid retriever for user '{user_id[:8]}' (k={k}, reranking={'ON' if RERANKING_ENABLED else 'OFF'})")
 
-    print(f"[RETRIEVER] Building retriever for user '{user_id[:8]}' (k={k}, reranking={'ON' if RERANKING_ENABLED else 'OFF'})...")
     embedding_model = _get_embedding_model()
     index_path = get_user_index_path(user_id)
 
@@ -144,7 +89,7 @@ def get_hybrid_retriever(user_id: str) -> EnsembleRetriever:
 
     all_docs = list(vectorstore.docstore._dict.values())
     if not all_docs:
-        raise ValueError("Your document index is empty. Re-upload your documents.")
+        raise ValueError("Document index is empty. Please re-upload your documents.")
 
     bm25 = BM25Retriever.from_documents(all_docs)
     bm25.k = k
@@ -160,185 +105,108 @@ def get_hybrid_retriever(user_id: str) -> EnsembleRetriever:
     )
 
     _retriever_cache[user_id] = ensemble
-    print(f"[RETRIEVER] Retriever cached for user '{user_id[:8]}'.")
+    logger.info(f"Hybrid retriever built and cached for user '{user_id[:8]}'")
     return ensemble
 
 
-# ─── Re-ranking ───────────────────────────────────────────────────────────────
-
-def rerank(query: str, docs: list) -> list[tuple]:
-    """
-    Re-rank retrieved documents using a CrossEncoder model.
-
-    HOW IT WORKS:
-      The CrossEncoder takes (query, document_text) pairs and produces a
-      relevance score for each pair. Unlike bi-encoder embeddings (which
-      encode query and document independently), the CrossEncoder reads them
-      TOGETHER through a transformer — much more accurate but slower.
-
-      This is why we use it as a second stage: retrieve many cheaply with
-      BM25+FAISS, then re-score the top candidates accurately with the
-      CrossEncoder.
-
-    Args:
-        query: The user's question
-        docs: List of LangChain Document objects from the retriever
-
-    Returns:
-        List of (doc, score) tuples, sorted by score descending,
-        truncated to FINAL_CONTEXT_K. The score is also injected into
-        each doc's metadata as 'relevance_score' for downstream use.
-    """
+def rerank(query: str, docs: List[Document]) -> List[Tuple[Document, float]]:
+    """Re-rank candidate documents using CrossEncoder transformer."""
     if not docs:
         return []
 
     cross_encoder = _get_cross_encoder()
-
-    # Build (query, passage) pairs for the cross-encoder
     pairs = [(query, doc.page_content) for doc in docs]
 
     t0 = time.time()
     scores = cross_encoder.predict(pairs)
     rerank_ms = (time.time() - t0) * 1000
 
-    # Combine docs with scores and sort by score descending
-    scored = list(zip(docs, scores))
-    scored.sort(key=lambda x: float(x[1]), reverse=True)
+    scored = list(zip(docs, [float(s) for s in scores]))
+    scored.sort(key=lambda x: x[1], reverse=True)
 
-    # Log the reranking results for comparison
-    print(f"\n[RERANKER] -- Re-ranking results ({rerank_ms:.0f}ms) --")
-    print(f"[RERANKER] Query: \"{query[:80]}{'...' if len(query) > 80 else ''}\"")
-    print(f"[RERANKER] {'Rank':<5} {'Score':>8}  {'Source':<30} {'Page':>5}")
-    print(f"[RERANKER] {'-'*5} {'-'*8}  {'-'*30} {'-'*5}")
-    for i, (doc, score) in enumerate(scored, 1):
-        src = doc.metadata.get("source", "unknown")
-        page = doc.metadata.get("page", 0) + 1
-        marker = " [OK]" if i <= FINAL_CONTEXT_K else " [X]"
-        print(f"[RERANKER] {i:<5} {float(score):>8.4f}  {src:<30} {page:>5}{marker}")
-    print(f"[RERANKER] Keeping top {FINAL_CONTEXT_K} of {len(scored)} candidates ({rerank_ms:.0f}ms latency)")
-    print()
+    logger.info(f"CrossEncoder reranked {len(docs)} candidates in {rerank_ms:.1f}ms for query: '{query[:60]}'")
 
-    # Truncate to FINAL_CONTEXT_K and inject score into metadata
     result = scored[:FINAL_CONTEXT_K]
     for doc, score in result:
-        doc.metadata["relevance_score"] = round(float(score), 4)
+        doc.metadata["relevance_score"] = round(score, 4)
 
     return result
 
 
-def retrieve_with_rewritten_queries(queries: list[str], user_id: str) -> list:
-    """
-    Fan-out retrieval: run the ensemble retriever for EACH query in the list,
-    then merge and deduplicate all results.
-
-    This is the Phase 5 multi-query path. When query rewriting produces
-    ["original question", "rewrite 1", "rewrite 2"], we retrieve candidates
-    for each, giving the reranker a wider and more diverse candidate pool.
-
-    Deduplication uses the first 200 chars of page_content as a key
-    (same approach as format_sources()'s seen set).
-
-    Args:
-        queries: List of query strings (original + rewrites)
-        user_id: The authenticated user's ID
-
-    Returns:
-        Deduplicated list of LangChain Document objects from all queries.
-    """
+def retrieve_with_rewritten_queries(queries: List[str], user_id: str) -> List[Document]:
+    """Fan-out multi-query retrieval with SHA-256 deduplication."""
     retriever = get_hybrid_retriever(user_id)
-    all_docs = []
-    seen = set()
+    all_docs: List[Document] = []
+    seen_hashes = set()
 
     for i, q in enumerate(queries):
         docs = retriever.invoke(q)
         new_count = 0
         for doc in docs:
-            key = doc.page_content[:200]
-            if key not in seen:
-                seen.add(key)
+            doc_hash = hashlib.sha256(doc.page_content.strip().encode("utf-8")).hexdigest()
+            if doc_hash not in seen_hashes:
+                seen_hashes.add(doc_hash)
                 all_docs.append(doc)
                 new_count += 1
-        print(f"[RETRIEVER] Query {i+1}/{len(queries)}: \"{q[:60]}{'...' if len(q) > 60 else ''}\" -> {len(docs)} docs ({new_count} new)")
+        logger.info(f"Query {i+1}/{len(queries)}: '{q[:50]}' -> {len(docs)} docs ({new_count} unique)")
 
-    print(f"[RETRIEVER] Multi-query total: {len(all_docs)} unique candidates from {len(queries)} queries")
+    logger.info(f"Multi-query total: {len(all_docs)} unique candidates from {len(queries)} queries")
     return all_docs
 
 
-def retrieve_and_rerank(query: str, user_id: str, queries: list[str] | None = None) -> list:
-    """
-    Full retrieval pipeline: retrieve candidates -> rerank -> return.
-
-    Phase 5 addition: when `queries` is provided with >1 entry (from
-    query rewriting), fans out retrieval to all queries before reranking.
-    When queries is None or single, behaves identically to Phase 4.
-
-    Args:
-        query:   The original user question (used for reranking scoring)
-        user_id: The authenticated user's ID
-        queries: Optional list of queries (original + rewrites). If None
-                 or single, uses single-query retrieval.
-
-    Returns:
-        List of LangChain Document objects (top FINAL_CONTEXT_K after reranking,
-        or top RETRIEVAL_K if reranking is disabled).
-    """
-    # Decide retrieval strategy: multi-query or single-query
+def retrieve_and_rerank(query: str, user_id: str, queries: Optional[List[str]] = None) -> List[Document]:
+    """Full RAG retrieval pipeline: fetch candidates -> deduplicate -> rerank -> return top K."""
+    t0 = time.time()
     if queries and len(queries) > 1:
         docs = retrieve_with_rewritten_queries(queries, user_id)
     else:
         retriever = get_hybrid_retriever(user_id)
         docs = retriever.invoke(query)
+        # Deduplicate single-query docs
+        seen = set()
+        deduped = []
+        for d in docs:
+            h = hashlib.sha256(d.page_content.strip().encode("utf-8")).hexdigest()
+            if h not in seen:
+                seen.add(h)
+                deduped.append(d)
+        docs = deduped
 
     if not RERANKING_ENABLED:
-        print(f"[RETRIEVER] Reranking disabled -- returning {len(docs)} docs directly")
-        return docs
+        logger.info(f"Reranking disabled -- returning top {len(docs)} docs directly")
+        return docs[:FINAL_CONTEXT_K]
 
-    # Log pre-rerank order for comparison
-    print(f"\n[RETRIEVER] -- Pre-rerank order ({len(docs)} candidates) --")
-    for i, doc in enumerate(docs, 1):
-        src = doc.metadata.get("source", "unknown")
-        page = doc.metadata.get("page", 0) + 1
-        print(f"[RETRIEVER]   {i}. {src} (Page {page})")
-
-    # Re-rank using the ORIGINAL query (best for cross-encoder scoring)
     ranked = rerank(query, docs)
+    elapsed = round((time.time() - t0) * 1000, 1)
+    logger.info(f"Retrieval & reranking completed in {elapsed}ms: returning {len(ranked)} docs")
     return [doc for doc, _score in ranked]
 
 
-# ─── Legacy functions (kept for backward compatibility) ───────────────────────
-
 def build_qa_chain(user_id: str) -> RetrievalQA:
-    """Build the full QA chain for this user's index (for /ask endpoint)."""
+    """Build legacy RetrievalQA chain for user index."""
     retriever = get_hybrid_retriever(user_id)
-    qa_chain = RetrievalQA.from_chain_type(
+    return RetrievalQA.from_chain_type(
         llm=get_llm(),
         chain_type="stuff",
         retriever=retriever,
         return_source_documents=True,
         chain_type_kwargs={"prompt": get_prompt_template()},
     )
-    return qa_chain
 
 
-def format_sources(docs: list) -> list[dict]:
-    """
-    Format retrieved documents into clean source citation dicts.
-
-    If the documents have been through reranking, each will have a
-    'relevance_score' in their metadata. This is included in the output
-    so the frontend can display it.
-    """
+def format_sources(docs: List[Document]) -> List[Dict[str, Any]]:
+    """Format retrieved document chunks into clean source citation dictionaries."""
     sources = []
     seen = set()
     for doc in docs:
-        key = doc.page_content[:100]
+        key = hashlib.sha256(doc.page_content.strip().encode("utf-8")).hexdigest()[:16]
         if key in seen:
             continue
         seen.add(key)
         meta = doc.metadata
         source_dict = {
-            "file":        meta.get("source", "unknown"),
-            "page":        meta.get("page", 0) + 1,
+            "file": meta.get("source", "unknown"),
+            "page": meta.get("page", 0) + 1,
             "total_pages": meta.get("total_pages", "?"),
             "chunk_index": meta.get("chunk_index", "?"),
             "upload_time": meta.get("upload_time", ""),
@@ -348,7 +216,6 @@ def format_sources(docs: list) -> list[dict]:
                 else doc.page_content
             ),
         }
-        # Include relevance score if available (from reranking)
         if "relevance_score" in meta:
             source_dict["relevance_score"] = meta["relevance_score"]
         sources.append(source_dict)

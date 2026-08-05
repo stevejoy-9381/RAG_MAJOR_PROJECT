@@ -42,12 +42,13 @@ export default function Sidebar({
   async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
-    const allowedExtensions = ['.pdf', '.docx', '.pptx', '.txt', '.csv']
+    const allowedExtensions = ['.pdf', '.docx', '.pptx', '.txt', '.csv', '.xlsx', '.xls']
     const ext = '.' + file.name.split('.').pop()?.toLowerCase()
     if (!allowedExtensions.includes(ext)) {
-      setUploadMsg({ text: 'Supported formats: PDF, DOCX, PPTX, TXT, CSV', ok: false })
+      setUploadMsg({ text: 'Supported formats: PDF, DOCX, PPTX, TXT, CSV, XLSX, XLS', ok: false })
       return
     }
+
 
     setUploading(true)
     setUploadMsg(null)

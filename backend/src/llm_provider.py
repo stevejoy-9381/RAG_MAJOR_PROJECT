@@ -1,33 +1,15 @@
 """
 src/llm_provider.py — Dual LLM Provider Abstraction (Ollama + Groq)
 ────────────────────────────────────────────────────────────────────
-WHAT THIS FILE DOES:
-  Provides a unified interface for calling either a local Ollama instance
-  or the Groq cloud API. The factory function `get_provider()` handles
-  automatic detection and fallback logic.
-
-WHY A PROVIDER ABSTRACTION?
-  api.py previously had Groq client calls hardcoded inline. This module
-  decouples LLM selection from request handling so you can:
-    - Run fully offline with Ollama (no API key needed)
-    - Fall back to Groq when Ollama isn't available
-    - Let users choose per-request via the `llm_mode` field
-
-CONNECTIONS:
-  → Used by api.py's /stream and /chat endpoints
-  → Does NOT replace src/llm.py (which provides the LangChain ChatGroq
-    wrapper used by retriever.py's build_qa_chain)
-
-PROVIDER ROUTING (get_provider):
-  preference="online"  → GroqProvider   (requires GROQ_API_KEY)
-  preference="offline" → OllamaProvider (pings first, raises if down)
-  preference="auto"/None → try Ollama ping → fallback to Groq → error
+Provides a unified interface for calling local Ollama instance
+or Groq cloud API with automatic model-readiness detection, exponential
+backoff retries, and seamless auto-failover.
 """
 
 import os
 import json
 from abc import ABC, abstractmethod
-from typing import Generator
+from typing import Generator, Optional, Union, Tuple
 
 import httpx
 import groq
@@ -38,10 +20,13 @@ from src.config import (
     GROQ_API_KEY, GROQ_MODEL, MODEL_NAME,
     LLM_TEMPERATURE, LLM_MAX_TOKENS, LLM_TOP_P,
 )
+from src.utils.retry import retry_with_backoff
+from src.logger import get_logger, log_event, log_error
 
+logger = get_logger("LLM_PROVIDER")
 load_dotenv()
 
-_shared_groq_client: Groq | None = None
+_shared_groq_client: Optional[Groq] = None
 
 
 def _get_shared_groq_client() -> Groq:
@@ -55,23 +40,14 @@ def _get_shared_groq_client() -> Groq:
                 "Set it in your .env file or use Ollama (offline mode) instead."
             )
         _shared_groq_client = Groq(api_key=api_key)
-        print("Groq Provider Connected")
-        print(f"Model: {GROQ_MODEL}")
+        logger.info(f"Groq Provider Connected: model={GROQ_MODEL}")
     return _shared_groq_client
-
 
 
 # ─── Abstract Base ────────────────────────────────────────────────────────────
 
 class LLMProvider(ABC):
-    """
-    Abstract base for LLM providers.
-
-    Every provider must implement:
-      - name: a short identifier ("ollama" or "groq")
-      - chat(): accepts an OpenAI-style messages list, returns either
-        a full response string or a generator of token strings.
-    """
+    """Abstract base for LLM providers."""
 
     @property
     @abstractmethod
@@ -84,42 +60,15 @@ class LLMProvider(ABC):
         self,
         messages: list[dict],
         stream: bool = True,
-    ) -> str | Generator[str, None, None]:
-        """
-        Send a chat completion request.
-
-        Args:
-            messages: OpenAI-style messages list
-                      [{"role": "system", "content": "..."}, ...]
-            stream:   If True, yield tokens one by one (generator).
-                      If False, return the full answer as a string.
-
-        Returns:
-            str            if stream=False
-            Generator[str] if stream=True (yields token strings)
-        """
+        yield_reasoning: bool = False,
+    ) -> Union[str, Tuple[str, Optional[str]], Generator[Union[str, Tuple[str, str]], None, None]]:
         ...
 
 
 # ─── Ollama Provider ─────────────────────────────────────────────────────────
 
 class OllamaProvider(LLMProvider):
-    """
-    Local LLM provider via Ollama (http://localhost:11434).
-
-    HOW IT WORKS:
-      Ollama exposes an OpenAI-compatible-ish REST API. We POST to
-      /api/chat with the messages list and read back NDJSON lines,
-      each containing a token in {"message": {"content": "..."}}.
-
-    CONFIGURATION:
-      OLLAMA_HOST  → base URL (default http://localhost:11434)
-      OLLAMA_MODEL → model name (default llama3.1:8b)
-
-    STREAMING:
-      Ollama streams by default. Each line of the response body is a
-      JSON object. We yield the content of each as a token.
-    """
+    """Local LLM provider via Ollama (http://localhost:11434)."""
 
     def __init__(self):
         self._host = os.getenv("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
@@ -130,13 +79,17 @@ class OllamaProvider(LLMProvider):
         return "ollama"
 
     def _ping(self, timeout: float = 3.0) -> bool:
-        """
-        Quick health check — GET the Ollama root endpoint.
-        Returns True if Ollama responds, False otherwise.
-        """
+        """Check if Ollama server is running AND target model is pulled."""
         try:
-            resp = httpx.get(self._host, timeout=timeout)
-            return resp.status_code == 200
+            resp = httpx.get(f"{self._host}/api/tags", timeout=timeout)
+            if resp.status_code == 200:
+                data = resp.json()
+                models = [m.get("name", "") for m in data.get("models", [])]
+                if any(self._model in m or m in self._model for m in models):
+                    return True
+                logger.warning(f"Ollama running but model '{self._model}' not found in {models}")
+                return False
+            return False
         except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPError):
             return False
 
@@ -144,21 +97,8 @@ class OllamaProvider(LLMProvider):
         self,
         messages: list[dict],
         stream: bool = True,
-    ) -> str | Generator[str, None, None]:
-        """
-        Call Ollama's /api/chat endpoint.
-
-        STREAMING MODE (stream=True):
-          Ollama returns NDJSON — one JSON object per line:
-            {"message": {"role": "assistant", "content": "Hello"}, "done": false}
-            {"message": {"role": "assistant", "content": " world"}, "done": false}
-            {"message": {"role": "assistant", "content": ""}, "done": true}
-          We yield each content string as a token.
-
-        NON-STREAMING MODE (stream=False):
-          We set stream=false in the request body. Ollama returns a single
-          JSON object with the full response.
-        """
+        yield_reasoning: bool = False,
+    ) -> Union[str, Tuple[str, Optional[str]], Generator[Union[str, Tuple[str, str]], None, None]]:
         url = f"{self._host}/api/chat"
         payload = {
             "model": self._model,
@@ -171,13 +111,13 @@ class OllamaProvider(LLMProvider):
         }
 
         if stream:
-            return self._stream_chat(url, payload)
+            return self._stream_chat(url, payload, yield_reasoning=yield_reasoning)
         else:
-            return self._sync_chat(url, payload)
+            return self._sync_chat(url, payload, yield_reasoning=yield_reasoning)
 
-    def _stream_chat(self, url: str, payload: dict) -> Generator[str, None, None]:
-        """Stream tokens from Ollama via NDJSON response."""
-        # Use a long timeout for generation (tokens can take a while on CPU)
+    def _stream_chat(
+        self, url: str, payload: dict, yield_reasoning: bool = False
+    ) -> Generator[Union[str, Tuple[str, str]], None, None]:
         with httpx.Client(timeout=httpx.Timeout(300.0, connect=10.0)) as client:
             with client.stream("POST", url, json=payload) as response:
                 response.raise_for_status()
@@ -188,34 +128,30 @@ class OllamaProvider(LLMProvider):
                         data = json.loads(line)
                         content = data.get("message", {}).get("content", "")
                         if content:
-                            yield content
+                            yield ("token", content) if yield_reasoning else content
                         if data.get("done", False):
                             break
                     except json.JSONDecodeError:
                         continue
 
-    def _sync_chat(self, url: str, payload: dict) -> str:
-        """Non-streaming call — returns the full answer string."""
+    @retry_with_backoff(retries=3, backoff_factor=1.5)
+    def _sync_chat(
+        self, url: str, payload: dict, yield_reasoning: bool = False
+    ) -> Union[str, Tuple[str, Optional[str]]]:
         with httpx.Client(timeout=httpx.Timeout(300.0, connect=10.0)) as client:
             response = client.post(url, json=payload)
             response.raise_for_status()
             data = response.json()
-            return data.get("message", {}).get("content", "")
+            content = data.get("message", {}).get("content", "")
+            if yield_reasoning:
+                return content, None
+            return content
 
 
 # ─── Groq Provider ───────────────────────────────────────────────────────────
 
 class GroqProvider(LLMProvider):
-    """
-    Cloud LLM provider via Groq API.
-
-    Uses centralized configuration (qwen/qwen3.6-27b on Groq LPU).
-
-    CONFIGURATION:
-      GROQ_API_KEY     → required
-      GROQ_MODEL       → model name (default qwen/qwen3.6-27b)
-      LLM_TEMPERATURE  → temperature (default 0.2)
-    """
+    """Cloud LLM provider via Groq API."""
 
     def __init__(self):
         self._client = _get_shared_groq_client()
@@ -233,17 +169,7 @@ class GroqProvider(LLMProvider):
         messages: list[dict],
         stream: bool = True,
         yield_reasoning: bool = False,
-    ) -> str | tuple[str, str | None] | Generator[str | tuple[str, str], None, None]:
-        """
-        Call Groq's chat completions API with detailed error handling.
-
-        STREAMING MODE:
-          Uses Groq's streaming API — yields delta content tokens.
-          If yield_reasoning=True, yields (type, content) tuples where type is 'reasoning' or 'token'.
-
-        NON-STREAMING MODE:
-          Single request, returns full answer (or (answer, reasoning) tuple if yield_reasoning=True).
-        """
+    ) -> Union[str, Tuple[str, Optional[str]], Generator[Union[str, Tuple[str, str]], None, None]]:
         if stream:
             return self._stream_chat(messages, yield_reasoning=yield_reasoning)
         else:
@@ -253,8 +179,7 @@ class GroqProvider(LLMProvider):
         self,
         messages: list[dict],
         yield_reasoning: bool = False,
-    ) -> Generator[str | tuple[str, str], None, None]:
-        """Stream tokens from Groq with exception handling and optional reasoning token yielding."""
+    ) -> Generator[Union[str, Tuple[str, str]], None, None]:
         try:
             response = self._client.chat.completions.create(
                 model=self._model,
@@ -302,30 +227,27 @@ class GroqProvider(LLMProvider):
                 else:
                     yield ("token", buffer) if yield_reasoning else buffer
         except groq.AuthenticationError as e:
-            print(f"[GROQ ERROR] Invalid API key or unauthorized: {e}")
+            log_error("GROQ", "Authentication error", e)
             raise RuntimeError("Groq API Authentication Error: Invalid API key provided.") from e
         except groq.RateLimitError as e:
-            print(f"[GROQ ERROR] Rate limit exceeded: {e}")
+            log_error("GROQ", "Rate limit error", e)
             raise RuntimeError("Groq API Rate Limit Exceeded: Please wait a moment and try again.") from e
         except groq.APIConnectionError as e:
-            print(f"[GROQ ERROR] Connection error: {e}")
+            log_error("GROQ", "Connection error", e)
             raise RuntimeError("Groq API Network Error: Could not connect to Groq cloud servers.") from e
         except groq.APITimeoutError as e:
-            print(f"[GROQ ERROR] Request timeout: {e}")
+            log_error("GROQ", "Timeout error", e)
             raise RuntimeError("Groq API Timeout: Request to Groq cloud timed out.") from e
-        except groq.APIError as e:
-            print(f"[GROQ ERROR] API error: {e}")
-            raise RuntimeError(f"Groq API Error: {e.message if hasattr(e, 'message') else str(e)}") from e
         except Exception as e:
-            print(f"[GROQ ERROR] Unexpected error in streaming chat: {e}")
+            log_error("GROQ", "Unexpected error in streaming", e)
             raise RuntimeError(f"LLM Provider Error: {str(e)}") from e
 
+    @retry_with_backoff(retries=3, backoff_factor=1.5)
     def _sync_chat(
         self,
         messages: list[dict],
         yield_reasoning: bool = False,
-    ) -> str | tuple[str, str | None]:
-        """Non-streaming call — returns full answer string (and optional reasoning) with exception handling."""
+    ) -> Union[str, Tuple[str, Optional[str]]]:
         try:
             response = self._client.chat.completions.create(
                 model=self._model,
@@ -346,121 +268,61 @@ class GroqProvider(LLMProvider):
                     if yield_reasoning:
                         return clean_content, reasoning_str
                     return clean_content
-            if yield_reasoning:
-                return "I apologize, but the model returned an empty response.", None
-            return "I apologize, but the model returned an empty response."
-        except groq.AuthenticationError as e:
-            print(f"[GROQ ERROR] Invalid API key or unauthorized: {e}")
-            raise RuntimeError("Groq API Authentication Error: Invalid API key provided.") from e
-        except groq.RateLimitError as e:
-            print(f"[GROQ ERROR] Rate limit exceeded: {e}")
-            raise RuntimeError("Groq API Rate Limit Exceeded: Please wait a moment and try again.") from e
-        except groq.APIConnectionError as e:
-            print(f"[GROQ ERROR] Connection error: {e}")
-            raise RuntimeError("Groq API Network Error: Could not connect to Groq cloud servers.") from e
-        except groq.APITimeoutError as e:
-            print(f"[GROQ ERROR] Request timeout: {e}")
-            raise RuntimeError("Groq API Timeout: Request to Groq cloud timed out.") from e
-        except groq.APIError as e:
-            print(f"[GROQ ERROR] API error: {e}")
-            raise RuntimeError(f"Groq API Error: {e.message if hasattr(e, 'message') else str(e)}") from e
+            fallback = "I apologize, but the model returned an empty response."
+            return (fallback, None) if yield_reasoning else fallback
         except Exception as e:
-            print(f"[GROQ ERROR] Unexpected error in sync chat: {e}")
-            raise RuntimeError(f"LLM Provider Error: {str(e)}") from e
-
-
-
+            log_error("GROQ", "Error in sync chat", e)
+            raise RuntimeError(f"Groq API Error: {str(e)}") from e
 
 
 # ─── Factory + Availability ──────────────────────────────────────────────────
 
 def _is_ollama_reachable() -> bool:
-    """Quick ping to check if Ollama is running."""
-    host = os.getenv("OLLAMA_HOST", "http://localhost:11434").rstrip("/")
-    try:
-        resp = httpx.get(host, timeout=3.0)
-        return resp.status_code == 200
-    except (httpx.ConnectError, httpx.TimeoutException, httpx.HTTPError):
-        return False
+    """Quick check if Ollama host is running and model is available."""
+    provider = OllamaProvider()
+    return provider._ping()
 
 
 def check_provider_availability() -> dict[str, bool]:
-    """
-    Check which LLM providers are currently available.
-    Used by the /status endpoint so the frontend can show/hide the toggle.
-
-    Returns:
-        {"ollama": True/False, "groq": True/False}
-    """
+    """Check which LLM providers are currently available."""
     return {
         "ollama": _is_ollama_reachable(),
         "groq": bool(GROQ_API_KEY or os.getenv("GROQ_API_KEY")),
     }
 
 
-
-def get_provider(preference: str | None = None) -> LLMProvider:
+def get_provider(preference: Optional[str] = None) -> LLMProvider:
     """
-    Factory: return the appropriate LLM provider based on user preference.
-
-    ROUTING LOGIC:
-      preference="online"  → GroqProvider (requires GROQ_API_KEY)
-      preference="offline" → OllamaProvider (must be reachable)
-      preference="auto"/None →
-        1. Try Ollama (ping with 3s timeout)
-        2. Fall back to Groq if GROQ_API_KEY is set
-        3. Raise clear error if neither is available
-
-    Args:
-        preference: "online", "offline", "auto", or None
-
-    Returns:
-        An LLMProvider instance ready to call .chat()
-
-    Raises:
-        ConnectionError: Ollama requested but not reachable
-        EnvironmentError: Groq requested but no API key
-        RuntimeError: Auto mode and no provider available
+    Factory: return appropriate LLM provider with failover logic.
     """
-    # Normalize: treat "auto" the same as None
     if preference == "auto":
         preference = None
 
-    # ── Explicit online (Groq) ────────────────────────────────────────────
     if preference == "online":
         if not os.getenv("GROQ_API_KEY"):
-            raise EnvironmentError(
-                "Online mode requested but GROQ_API_KEY is not set. "
-                "Add it to your .env file or switch to offline/auto mode."
-            )
-        print("[LLM_PROVIDER] Using Groq (online — explicitly requested)")
+            raise EnvironmentError("Online mode requested but GROQ_API_KEY is not set.")
+        logger.info("[LLM_PROVIDER] Using Groq (online mode)")
         return GroqProvider()
 
-    # ── Explicit offline (Ollama) ─────────────────────────────────────────
     if preference == "offline":
         provider = OllamaProvider()
         if not provider._ping():
             host = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-            raise ConnectionError(
-                f"Offline mode requested but Ollama is not reachable at {host}. "
-                f"Start Ollama with 'ollama serve' or check OLLAMA_HOST in .env."
-            )
-        print(f"[LLM_PROVIDER] Using Ollama (offline — explicitly requested)")
+            raise ConnectionError(f"Offline mode requested but Ollama model is not reachable at {host}.")
+        logger.info("[LLM_PROVIDER] Using Ollama (offline mode)")
         return provider
 
-    # ── Auto mode: try Ollama first, fall back to Groq ────────────────────
+    # Auto mode: try Ollama, fall back to Groq
     ollama = OllamaProvider()
     if ollama._ping():
-        print("[LLM_PROVIDER] Using Ollama (auto — local server detected)")
+        logger.info("[LLM_PROVIDER] Using Ollama (auto — local model ready)")
         return ollama
 
     if os.getenv("GROQ_API_KEY"):
-        print("[LLM_PROVIDER] Ollama not reachable, falling back to Groq (auto)")
+        logger.info("[LLM_PROVIDER] Ollama not available, falling back to Groq (auto mode)")
         return GroqProvider()
 
     raise RuntimeError(
-        "No LLM provider available.\n"
-        "  - To use Ollama (local): install and run 'ollama serve'\n"
-        "  - To use Groq (cloud):   set GROQ_API_KEY in your .env file\n"
-        "At least one provider must be available to answer questions."
+        "No LLM provider available. "
+        "Either start Ollama locally or set GROQ_API_KEY in your .env file."
     )

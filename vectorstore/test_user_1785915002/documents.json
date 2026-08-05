@@ -1,0 +1,11 @@
+{
+  "documents": [
+    {
+      "filename": "benchmark_7000.csv",
+      "uploaded_at": "2026-08-05T07:32:47.365153+00:00",
+      "pages": 140,
+      "chunks": 140,
+      "size_kb": 231.0
+    }
+  ]
+}

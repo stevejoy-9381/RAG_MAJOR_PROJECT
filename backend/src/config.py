@@ -63,3 +63,15 @@ RERANKING_ENABLED = os.getenv("RERANKING_ENABLED", "true").lower() in ("true", "
 QUERY_REWRITING_ENABLED = os.getenv("QUERY_REWRITING_ENABLED", "false").lower() in ("true", "1", "yes")
 SHOW_THINKING_PROCESS = os.getenv("SHOW_THINKING_PROCESS", "false").lower() in ("true", "1", "yes")
 
+# ─── Ingestion & High Performance Batching ──────────────────────────────────
+EMBEDDING_BATCH_SIZE = int(os.getenv("EMBEDDING_BATCH_SIZE", 256))
+TABULAR_ROWS_PER_CHUNK = int(os.getenv("TABULAR_ROWS_PER_CHUNK", 200))
+MAX_UPLOAD_SIZE_BYTES = int(os.getenv("MAX_UPLOAD_SIZE_BYTES", 100 * 1024 * 1024))  # 100MB limit
+
+
+# ─── Retry & Timeout Parameters ──────────────────────────────────────────────
+MAX_LLM_RETRIES = int(os.getenv("MAX_LLM_RETRIES", 3))
+LLM_RETRY_BACKOFF_FACTOR = float(os.getenv("LLM_RETRY_BACKOFF_FACTOR", 1.5))
+LLM_TIMEOUT_SECONDS = float(os.getenv("LLM_TIMEOUT_SECONDS", 60.0))
+
+

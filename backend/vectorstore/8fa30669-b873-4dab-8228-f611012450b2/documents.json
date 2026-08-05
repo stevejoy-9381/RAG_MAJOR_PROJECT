@@ -13,6 +13,20 @@
       "pages": 5,
       "chunks": 13,
       "size_kb": 312.0
+    },
+    {
+      "filename": "Microsoft Word - Final GATE Website Advertisement.pdf",
+      "uploaded_at": "2026-08-03T03:18:19.208400+00:00",
+      "pages": 18,
+      "chunks": 67,
+      "size_kb": 1210.2
+    },
+    {
+      "filename": "WA_Fn-UseC_-Telco-Customer-Churn.csv",
+      "uploaded_at": "2026-08-03T03:42:51.561212+00:00",
+      "pages": 7043,
+      "chunks": 7043,
+      "size_kb": 954.6
     }
   ]
 }
