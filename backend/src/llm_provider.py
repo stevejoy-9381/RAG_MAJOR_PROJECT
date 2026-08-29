@@ -191,41 +191,76 @@ class GroqProvider(LLMProvider):
             )
             in_think = False
             buffer = ""
+            answer_chars_count = 0
+            accumulated_think_text = ""
+
             for chunk in response:
-                if chunk.choices and len(chunk.choices) > 0:
-                    delta = chunk.choices[0].delta
-                    if delta and delta.content:
-                        buffer += delta.content
-                        while buffer:
-                            if not in_think:
-                                if "<think>" in buffer:
-                                    pre, post = buffer.split("<think>", 1)
-                                    if pre:
-                                        yield ("token", pre) if yield_reasoning else pre
-                                    buffer = post
-                                    in_think = True
-                                else:
-                                    yield ("token", buffer) if yield_reasoning else buffer
-                                    buffer = ""
-                                    break
+                if not chunk.choices or len(chunk.choices) == 0:
+                    continue
+                delta = chunk.choices[0].delta
+                if not delta:
+                    continue
+
+                # Handle explicit reasoning delta if provided by Groq API
+                reasoning = getattr(delta, "reasoning", None)
+                if reasoning and yield_reasoning:
+                    yield ("reasoning", reasoning)
+
+                content = getattr(delta, "content", None)
+                if content:
+                    buffer += content
+                    while buffer:
+                        if not in_think:
+                            if "<think>" in buffer:
+                                pre, post = buffer.split("<think>", 1)
+                                if pre:
+                                    yield ("token", pre) if yield_reasoning else pre
+                                    answer_chars_count += len(pre.strip())
+                                buffer = post
+                                in_think = True
                             else:
-                                if "</think>" in buffer:
-                                    think_part, post = buffer.split("</think>", 1)
-                                    if think_part and yield_reasoning:
-                                        yield ("reasoning", think_part)
-                                    buffer = post.lstrip("\n")
-                                    in_think = False
-                                else:
-                                    if yield_reasoning and buffer:
-                                        yield ("reasoning", buffer)
-                                        buffer = ""
-                                    break
+                                yield ("token", buffer) if yield_reasoning else buffer
+                                answer_chars_count += len(buffer.strip())
+                                buffer = ""
+                                break
+                        else:
+                            if "</think>" in buffer:
+                                think_part, post = buffer.split("</think>", 1)
+                                accumulated_think_text += think_part
+                                if think_part and yield_reasoning:
+                                    yield ("reasoning", think_part)
+                                buffer = post.lstrip("\n")
+                                in_think = False
+                            else:
+                                accumulated_think_text += buffer
+                                if yield_reasoning and buffer:
+                                    yield ("reasoning", buffer)
+                                    buffer = ""
+                                break
+
+            # Post-loop handling for residual buffer
             if buffer:
                 if in_think:
+                    accumulated_think_text += buffer
                     if yield_reasoning:
                         yield ("reasoning", buffer)
+                    elif answer_chars_count == 0:
+                        clean_buf = buffer.replace("<think>", "").strip()
+                        if clean_buf:
+                            yield ("token", clean_buf) if yield_reasoning else clean_buf
+                            answer_chars_count += len(clean_buf.strip())
                 else:
                     yield ("token", buffer) if yield_reasoning else buffer
+                    answer_chars_count += len(buffer.strip())
+
+            # Ultimate fallback: If no non-whitespace answer chars were yielded and reasoning/thinking text exists
+            if answer_chars_count == 0 and accumulated_think_text.strip() and not yield_reasoning:
+                clean_think = accumulated_think_text.replace("<think>", "").replace("</think>", "").strip()
+                if clean_think:
+                    logger.info("[GROQ] Yielding fallback answer from thinking block content.")
+                    yield ("token", clean_think) if yield_reasoning else clean_think
+                    answer_chars_count += len(clean_think)
+
         except groq.AuthenticationError as e:
             log_error("GROQ", "Authentication error", e)
             raise RuntimeError("Groq API Authentication Error: Invalid API key provided.") from e
@@ -265,6 +300,8 @@ class GroqProvider(LLMProvider):
                     if think_match:
                         reasoning_str = think_match.group(1).strip()
                     clean_content = re.sub(r"<think>.*?</think>", "", content, flags=re.DOTALL).strip()
+                    if not clean_content and content.strip():
+                        clean_content = re.sub(r"</?think>", "", content, flags=re.DOTALL).strip()
                     if yield_reasoning:
                         return clean_content, reasoning_str
                     return clean_content

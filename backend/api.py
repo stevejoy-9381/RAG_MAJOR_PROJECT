@@ -139,6 +139,19 @@ def startup_event():
         print("Groq Provider Connected")
         print(f"Model: {GROQ_MODEL}")
 
+    def prewarm_models():
+        try:
+            from src.ingest import get_embedding_model
+            from src.retriever import _get_cross_encoder
+            logger.info("[STARTUP] Pre-warming embedding model and CrossEncoder in background...")
+            get_embedding_model()
+            _get_cross_encoder()
+            logger.info("[STARTUP] Embedding model and CrossEncoder pre-warmed successfully.")
+        except Exception as e:
+            logger.warning(f"[STARTUP] Model pre-warming warning: {e}")
+
+    threading.Thread(target=prewarm_models, daemon=True).start()
+
 
 
 # ─── Auth dependency ──────────────────────────────────────────────────────────
@@ -753,8 +766,9 @@ async def stream_answer(
             yield "data: [DONE]\n\n"
             return
 
-        if full_answer and not has_error:
+        if full_answer.strip() and not has_error:
             latency = round(time.time() - t_start, 2)
+            logger.info(f"[DEBUG_STREAM] Answer generation completed successfully: length={len(full_answer)}, latency={latency}s")
             add_message(conversation_id, "user", question)
             sources = format_sources(docs)
             add_message(conversation_id, "assistant", full_answer,
@@ -762,8 +776,10 @@ async def stream_answer(
             add_exchange(conversation_id, question, full_answer)
             yield f"data: {json.dumps({'type':'metadata','sources':sources,'conversation_id':conversation_id,'provider':provider_name})}\n\n"
         elif not has_error:
+            logger.warning("[DEBUG_STREAM] Generation complete but full_answer is empty or whitespace. Emitting error SSE.")
             yield f"data: {json.dumps({'type':'error','content':'The AI model returned an empty response. Please try again.'})}\n\n"
 
+        logger.info("[DEBUG_STREAM] Sending final [DONE] SSE event.")
         yield "data: [DONE]\n\n"
 
     return StreamingResponse(

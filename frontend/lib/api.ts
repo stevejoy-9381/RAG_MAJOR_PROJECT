@@ -209,9 +209,12 @@ export async function streamAnswer(params: {
     return
   }
 
+  console.log('[STREAM] Connected to /stream endpoint, status:', response.status)
+
   const reader  = response.body!.getReader()
   const decoder = new TextDecoder()
   let   buffer  = ''
+  let   tokenCount = 0
 
   try {
     while (true) {
@@ -230,14 +233,27 @@ export async function streamAnswer(params: {
         if (!trimmed.startsWith('data: ')) continue
 
         const payload = trimmed.slice(6)  // strip "data: "
-        if (payload === '[DONE]') { onDone(); return }
+        if (payload === '[DONE]') {
+          console.log(`[STREAM] Received [DONE] event. Total tokens parsed: ${tokenCount}`)
+          onDone()
+          return
+        }
 
         try {
           const event = JSON.parse(payload) as StreamEvent
+          console.log('[STREAM] Parsed event:', event.type)
           switch (event.type) {
-            case 'token':    onToken(event.content); break
-            case 'metadata': onMetadata(event.sources, event.conversation_id, event.provider); break
-            case 'error':    onError(event.content); break
+            case 'token':
+              tokenCount++
+              onToken(event.content)
+              break
+            case 'metadata':
+              onMetadata(event.sources, event.conversation_id, event.provider)
+              break
+            case 'error':
+              console.warn('[STREAM] Received error event:', event.content)
+              onError(event.content)
+              break
           }
         } catch {
           // Malformed JSON in stream — ignore and continue
@@ -245,6 +261,7 @@ export async function streamAnswer(params: {
       }
     }
   } catch (err) {
+    console.error('[STREAM] Stream reading error:', err)
     onError(err instanceof Error ? err.message : 'Stream interrupted')
   } finally {
     onDone()

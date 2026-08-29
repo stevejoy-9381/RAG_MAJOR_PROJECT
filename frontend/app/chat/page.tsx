@@ -292,14 +292,22 @@ export default function ChatPage() {
         abortControllerRef.current = null
         setMessages(prev => prev.map(m => {
           if (m.id !== assistantId) return m
-          const finalContent = fullContent || (hasError ? m.content : '⚠️ I could not generate a response. Please try again.')
+          const hasValidContent = fullContent.trim().length > 0
+          let finalContent = fullContent
+          if (!hasValidContent) {
+            if (hasError && m.content && m.content.startsWith('⚠️')) {
+              finalContent = m.content
+            } else {
+              finalContent = '⚠️ I could not generate a response. Please try again.'
+            }
+          }
           return {
             ...m,
             content: finalContent,
             sources: finalSources,
             isStreaming: false,
             provider: resolvedProvider,
-            error: hasError || !fullContent,
+            error: hasError || !hasValidContent,
           }
         }))
         setStreaming(false)
