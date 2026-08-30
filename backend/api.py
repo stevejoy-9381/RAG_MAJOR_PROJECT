@@ -740,17 +740,17 @@ async def stream_answer(
                     yield f"data: {json.dumps({'type':'error','content':f'Provider error: {error_box[0]}'})}\n\n"
                     break
 
-                if yield_reasoning and isinstance(item, tuple):
+                if isinstance(item, tuple):
                     event_type, text = item
                     if event_type == "reasoning":
-                        yield f"data: {json.dumps({'type':'reasoning','content':text})}\n\n"
+                        if yield_reasoning:
+                            yield f"data: {json.dumps({'type':'reasoning','content':text})}\n\n"
                     else:
                         full_answer += text
                         yield f"data: {json.dumps({'type':'token','content':text})}\n\n"
                 else:
-                    token_str = item if isinstance(item, str) else item[1]
-                    full_answer += token_str
-                    yield f"data: {json.dumps({'type':'token','content':token_str})}\n\n"
+                    full_answer += item
+                    yield f"data: {json.dumps({'type':'token','content':item})}\n\n"
                 await asyncio.sleep(0)
 
         except FileNotFoundError as e:

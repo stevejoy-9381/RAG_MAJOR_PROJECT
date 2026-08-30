@@ -244,22 +244,9 @@ class GroqProvider(LLMProvider):
                     accumulated_think_text += buffer
                     if yield_reasoning:
                         yield ("reasoning", buffer)
-                    elif answer_chars_count == 0:
-                        clean_buf = buffer.replace("<think>", "").strip()
-                        if clean_buf:
-                            yield ("token", clean_buf) if yield_reasoning else clean_buf
-                            answer_chars_count += len(clean_buf.strip())
                 else:
                     yield ("token", buffer) if yield_reasoning else buffer
                     answer_chars_count += len(buffer.strip())
-
-            # Ultimate fallback: If no non-whitespace answer chars were yielded and reasoning/thinking text exists
-            if answer_chars_count == 0 and accumulated_think_text.strip() and not yield_reasoning:
-                clean_think = accumulated_think_text.replace("<think>", "").replace("</think>", "").strip()
-                if clean_think:
-                    logger.info("[GROQ] Yielding fallback answer from thinking block content.")
-                    yield ("token", clean_think) if yield_reasoning else clean_think
-                    answer_chars_count += len(clean_think)
 
         except groq.AuthenticationError as e:
             log_error("GROQ", "Authentication error", e)

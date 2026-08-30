@@ -20,6 +20,46 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
+/** Strip reasoning/thinking preamble text so only the final answer is shown */
+function stripReasoningText(text: string): string {
+  if (!text) return text
+
+  // 1. Remove explicit <think>...</think> blocks
+  let cleaned = text.replace(/<think>[\s\S]*?<\/think>/gi, '')
+  cleaned = cleaned.replace(/<think>[\s\S]*$/gi, '')
+
+  // 2. Check for "Final Answer:" or "Final Response:" marker
+  const finalMatch = cleaned.match(/(?:Final Answer|Final Response):\s*/i)
+  if (finalMatch && finalMatch.index !== undefined) {
+    const preMatchText = cleaned.slice(0, finalMatch.index).trim()
+    const thinkingKeywords = [
+      "here's a thinking process",
+      "analyze user input",
+      "scan context",
+      "thinking process",
+      "thought process",
+      "self-correction",
+      "extract relevant information",
+    ]
+    if (thinkingKeywords.some(kw => preMatchText.toLowerCase().includes(kw))) {
+      cleaned = cleaned.slice(finalMatch.index + finalMatch[0].length)
+    }
+  }
+
+  // 3. Remove standalone "Here's a thinking process:" header at start if no "Final Answer:" tag
+  const thinkingHeaderMatch = cleaned.match(
+    /^(?:Here's a thinking process|Thinking Process|Thought Process):\s*/i
+  )
+  if (thinkingHeaderMatch && !finalMatch) {
+    const parts = cleaned.split(/\n\s*\n/)
+    if (parts.length > 1) {
+      cleaned = parts.slice(1).join('\n\n')
+    }
+  }
+
+  return cleaned.trim()
+}
+
 /** Pre-format content so every Markdown list item is guaranteed to start on a new line */
 function formatMarkdownListItems(content: string): string {
   if (!content) return content
@@ -28,6 +68,11 @@ function formatMarkdownListItems(content: string): string {
   // 2. Ensure list items starting with bullet/number + letter/number (e.g. " - Item 1 - Item 2") after non-newline content have a preceding newline if preceded by punctuation or letters
   formatted = formatted.replace(/([:\.\?!A-Za-z0-9\)])\s+([-\*\+]|\d+\.)\s+([A-Z0-9])/g, '$1\n$2 $3')
   return formatted
+}
+
+function processMessageContent(content: string): string {
+  const cleanText = stripReasoningText(content)
+  return formatMarkdownListItems(cleanText)
 }
 
 /** Provider badge shown on assistant messages */
@@ -156,7 +201,7 @@ export default function ChatMessage({ message, onRetry }: Props) {
                     ),
                   }}
                 >
-                  {formatMarkdownListItems(message.content)}
+                  {processMessageContent(message.content)}
                 </ReactMarkdown>
               ) : (
                 message.isStreaming ? '' : '…'
