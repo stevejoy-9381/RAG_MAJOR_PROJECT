@@ -20,6 +20,16 @@ function formatTime(date: Date): string {
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
 }
 
+/** Pre-format content so every Markdown list item is guaranteed to start on a new line */
+function formatMarkdownListItems(content: string): string {
+  if (!content) return content
+  // 1. Ensure list items starting with bullet/number + bold (e.g. " - **" or "\n- **") after non-newline content have a preceding newline
+  let formatted = content.replace(/([^\n])\s+([-\*\+]|\d+\.)\s+(\*\*)/g, '$1\n$2 $3')
+  // 2. Ensure list items starting with bullet/number + letter/number (e.g. " - Item 1 - Item 2") after non-newline content have a preceding newline if preceded by punctuation or letters
+  formatted = formatted.replace(/([:\.\?!A-Za-z0-9\)])\s+([-\*\+]|\d+\.)\s+([A-Z0-9])/g, '$1\n$2 $3')
+  return formatted
+}
+
 /** Provider badge shown on assistant messages */
 function ProviderBadge({ provider }: { provider: string }) {
   const isOllama = provider === 'ollama'
@@ -146,7 +156,7 @@ export default function ChatMessage({ message, onRetry }: Props) {
                     ),
                   }}
                 >
-                  {message.content}
+                  {formatMarkdownListItems(message.content)}
                 </ReactMarkdown>
               ) : (
                 message.isStreaming ? '' : '…'
