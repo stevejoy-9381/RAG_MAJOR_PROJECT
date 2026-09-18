@@ -35,7 +35,7 @@ def get_llm() -> ChatGroq:
     """
     Create and return a Groq LLM client using centralized configuration.
 
-    Model: qwen/qwen3.6-27b on Groq Cloud LPU.
+    Model: qwen/qwen3.8-27b on Groq Cloud LPU.
     """
     api_key = GROQ_API_KEY or os.getenv("GROQ_API_KEY")
     if not api_key:

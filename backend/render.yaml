@@ -41,7 +41,7 @@ services:
       - key: PYTHONUNBUFFERED
         value: "1"
       - key: GROQ_MODEL
-        value: "qwen/qwen3.6-27b"
+        value: "qwen/qwen3.8-27b"
       - key: LLM_TEMPERATURE
         value: "0.2"
       - key: RETRIEVAL_K

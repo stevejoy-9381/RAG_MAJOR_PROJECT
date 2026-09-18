@@ -1,0 +1,34 @@
+# Environments & Secrets
+.env
+.env.local
+*.env
+
+# Dependencies & Virtual Envs
+node_modules/
+.next/
+venv/
+.venv/
+env/
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# User Data & Generated Storage
+vectorstore/
+*.db
+*.db-shm
+*.db-wal
+users.json
+data/*.pdf
+data/*.docx
+data/*.txt
+
+# Build Artifacts & Logs
+build/
+dist/
+out/
+*.log
+.DS_Store
+.vscode/
+.idea/

@@ -51,7 +51,7 @@ FAISS_WEIGHT = float(os.getenv("FAISS_WEIGHT", 0.6))
 # ─── Groq LLM Configuration ───────────────────────────────────────────────────
 # Single source of truth for Groq cloud LLM provider configuration.
 GROQ_API_KEY = os.getenv("GROQ_API_KEY", "")
-GROQ_MODEL = os.getenv("GROQ_MODEL", os.getenv("LLM_MODEL", "qwen/qwen3.6-27b"))
+GROQ_MODEL = os.getenv("GROQ_MODEL", os.getenv("LLM_MODEL", "qwen/qwen3.8-27b"))
 MODEL_NAME = GROQ_MODEL  # Centralized alias
 
 LLM_TEMPERATURE = float(os.getenv("LLM_TEMPERATURE", "0.2"))

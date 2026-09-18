@@ -166,7 +166,7 @@ When enabled (`QUERY_REWRITING_ENABLED=true` or requested via API parameter):
 
 ```
 RAG-PROJECT-combined/
-├── README.md                      # Complete Project Documentation
+├── README.md                      # Complete Project Documentation (this file)
 └── merged/
     ├── backend/
     │   ├── api.py                 # FastAPI Application & REST/SSE Endpoints
