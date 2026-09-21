@@ -1,0 +1,16 @@
+DocMind Tenant Data Lifecycle & Offboarding Policy
+Document ID: POL-DATA-RET-2026
+
+Section 1: Scope
+This policy governs data handling upon corporate subscription termination or contract expiration.
+
+Section 2: Customer Export Window
+Departing enterprise customers have 30 calendar days following contract termination to export all indexed documents, vector embeddings, and conversation histories via the automated export API.
+
+Section 3: Archival Freezing
+From Day 31 to Day 45 post-termination, tenant data is frozen in cold storage staging.
+No user access or API retrieval is permitted during this staging period.
+
+Section 4: Final Cryptographic Sanitization
+On Day 46 post-termination, all persistent storage volumes, FAISS indices, SQLite records, and backups are permanently purged.
+Media sanitization adheres strictly to NIST SP 800-88 Rev 1 Guidelines for Media Sanitization using Cryptographic Erase (CE) and physical block overwriting.

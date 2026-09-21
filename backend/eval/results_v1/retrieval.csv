@@ -1,0 +1,161 @@
+setup,question_id,type,question,hit_at_4,mrr,first_hit_rank,latency_ms,top1_source
+A: FAISS Only,1,factual,What embedding model is used by DocMind for dense vector indexing and what is its output dimension?,1,1.0,1,124.54,docmind_technical_architecture.txt
+A: FAISS Only,2,factual,What is the maximum allowed document upload size in DocMind?,1,1.0,1,43.05,docmind_technical_architecture.txt
+A: FAISS Only,3,factual,What default chunk size and chunk overlap are used for narrative documents?,1,1.0,1,47.52,docmind_technical_architecture.txt
+A: FAISS Only,4,factual,What algorithm does DocMind use to hash user passwords before saving them in SQLite?,1,1.0,1,39.53,docmind_technical_architecture.txt
+A: FAISS Only,5,factual,How long do JWT authentication tokens remain valid before expiring in DocMind?,1,1.0,1,38.45,docmind_technical_architecture.txt
+A: FAISS Only,6,factual,What cross-encoder model is utilized for neural re-ranking in DocMind?,1,0.5,2,37.62,docmind_technical_architecture.txt
+A: FAISS Only,7,factual,What is the default batch size for embedding generation in DocMind?,1,0.5,2,32.95,docmind_technical_architecture.txt
+A: FAISS Only,8,factual,How many initial candidate chunks are retrieved before re-ranking is applied?,1,1.0,1,31.95,docmind_technical_architecture.txt
+A: FAISS Only,9,factual,What is the primary cloud LLM provider and default model in DocMind?,1,1.0,1,30.73,docmind_technical_architecture.txt
+A: FAISS Only,10,factual,What local LLM instance and models are supported as a secondary fallback?,1,1.0,1,37.19,docmind_technical_architecture.txt
+A: FAISS Only,11,factual,What are the core working hours for full-time employees at CloudCorp?,1,1.0,1,41.18,cloudcorp_operations_and_policies.txt
+A: FAISS Only,12,factual,How much is the one-time remote home office stipend provided to full-time employees?,1,1.0,1,46.95,cloudcorp_operations_and_policies.txt
+A: FAISS Only,13,factual,How many days of annual paid vacation (PTO) do CloudCorp employees accrue per year?,1,1.0,1,39.46,cloudcorp_operations_and_policies.txt
+A: FAISS Only,14,factual,What is the paid parental leave entitlement for primary caregivers at CloudCorp?,1,1.0,1,34.63,cloudcorp_operations_and_policies.txt
+A: FAISS Only,15,factual,What is the annual deductible for CloudCorp Health Insurance Tier A (Comprehensive Gold)?,1,1.0,1,30.94,cloudcorp_operations_and_policies.txt
+A: FAISS Only,16,factual,Within what timeframe must suspected security incidents or credential leaks be reported at CloudCorp?,1,1.0,1,31.16,cloudcorp_operations_and_policies.txt
+A: FAISS Only,17,factual,What is the uptime percentage guaranteed by DocMind Enterprise Mission-Critical Tier?,1,1.0,1,28.92,enterprise_sla_and_billing.txt
+A: FAISS Only,18,factual,When are the regular scheduled weekly maintenance windows for DocMind Cloud?,1,1.0,1,26.76,enterprise_sla_and_billing.txt
+A: FAISS Only,19,factual,What rate limit in requests per minute (RPM) is enforced for Enterprise Tier customers?,1,1.0,1,29.69,enterprise_sla_and_billing.txt
+A: FAISS Only,20,factual,What is the storage cost per GB per month for Tier 1 High-Performance SSD Vector Storage?,1,1.0,1,31.09,enterprise_sla_and_billing.txt
+A: FAISS Only,21,factual,What is the target initial response time for Severity 1 critical outage incidents?,1,1.0,1,28.59,enterprise_sla_and_billing.txt
+A: FAISS Only,22,factual,How many days do customers have to export their data following contract termination?,1,1.0,1,34.64,enterprise_sla_and_billing.txt
+A: FAISS Only,23,factual,What standard is used to cryptographically purge tenant data on day 46 post-termination?,1,1.0,1,41.6,enterprise_sla_and_billing.txt
+A: FAISS Only,24,factual,What is the hourly compute cost for dedicated GPU re-ranker workers?,1,1.0,1,41.84,enterprise_sla_and_billing.txt
+A: FAISS Only,25,factual,How many rows are grouped per block chunk during tabular ingestion in DocMind?,1,1.0,1,50.79,docmind_technical_architecture.txt
+A: FAISS Only,26,multi-chunk,Explain how DocMind handles hybrid search candidate retrieval and subsequent neural re-ranking from top candidates down to final context.,1,1.0,1,63.23,docmind_technical_architecture.txt
+A: FAISS Only,27,multi-chunk,"What are the total equipment, internet, and wellness allowances an employee at CloudCorp can receive in their first year?",1,1.0,1,64.3,cloudcorp_operations_and_policies.txt
+A: FAISS Only,28,multi-chunk,"Compare the monthly uptime guarantees, allowed downtime, and rate limits between DocMind Standard Tier and Enterprise Tier.",1,1.0,1,65.1,enterprise_sla_and_billing.txt
+A: FAISS Only,29,multi-chunk,How does DocMind ensure data privacy during user authentication and subsequent vector database storage?,1,1.0,1,37.36,docmind_technical_architecture.txt
+A: FAISS Only,30,multi-chunk,What is the full lifecycle process for customer data from initial contract termination through export and final destruction?,1,1.0,1,47.57,enterprise_sla_and_billing.txt
+A: FAISS Only,31,keyword-heavy,What is the exact expense code for the remote home office stipend and what is the policy form code for consecutive sick leave exceeding 3 days?,1,1.0,1,46.0,cloudcorp_operations_and_policies.txt
+A: FAISS Only,32,keyword-heavy,"What is the exact billing schedule code for SLA credits, what ticket code must be quoted when filing, and what HTTP error code is returned for rate limit violations?",1,1.0,1,57.4,enterprise_sla_and_billing.txt
+A: FAISS Only,33,keyword-heavy,"What is the exact document ID, revision number, and default GROQ_MODEL string specified in the DocMind Technical Architecture?",1,1.0,1,53.05,docmind_technical_architecture.txt
+A: FAISS Only,34,keyword-heavy,"What are the exact codes for the internet subsidy category, laptop refresh schedule, and wellness reimbursement program?",1,1.0,1,63.95,cloudcorp_operations_and_policies.txt
+A: FAISS Only,35,keyword-heavy,"What are the exact values of BM25_WEIGHT, FAISS_WEIGHT, RETRIEVAL_CANDIDATES, and FINAL_CONTEXT_K in DocMind?",1,1.0,1,75.56,docmind_technical_architecture.txt
+A: FAISS Only,36,unanswerable,What is the exact physical office address and floor number of CloudCorp headquarters in Tokyo?,N/A,N/A,Miss,60.63,cloudcorp_operations_and_policies.txt
+A: FAISS Only,37,unanswerable,What quantum encryption algorithm is planned for DocMind version 10 in the year 2035?,N/A,N/A,Miss,38.19,docmind_technical_architecture.txt
+A: FAISS Only,38,unanswerable,How many total shares of common stock were issued during CloudCorp's Series C funding round?,N/A,N/A,Miss,32.1,cloudcorp_operations_and_policies.txt
+A: FAISS Only,39,unanswerable,What is the monthly discount percentage for subscribing to a 5-year multi-region quantum storage contract in Antarctica?,N/A,N/A,Miss,33.64,enterprise_sla_and_billing.txt
+A: FAISS Only,40,unanswerable,What is the personal phone number and personal email of the DocMind chief executive officer?,N/A,N/A,Miss,29.86,cloudcorp_operations_and_policies.txt
+B: BM25 Only,1,factual,What embedding model is used by DocMind for dense vector indexing and what is its output dimension?,1,1.0,1,1.17,docmind_technical_architecture.txt
+B: BM25 Only,2,factual,What is the maximum allowed document upload size in DocMind?,1,1.0,1,0.51,docmind_technical_architecture.txt
+B: BM25 Only,3,factual,What default chunk size and chunk overlap are used for narrative documents?,1,1.0,1,0.52,docmind_technical_architecture.txt
+B: BM25 Only,4,factual,What algorithm does DocMind use to hash user passwords before saving them in SQLite?,1,0.5,2,0.53,docmind_technical_architecture.txt
+B: BM25 Only,5,factual,How long do JWT authentication tokens remain valid before expiring in DocMind?,1,1.0,1,0.47,docmind_technical_architecture.txt
+B: BM25 Only,6,factual,What cross-encoder model is utilized for neural re-ranking in DocMind?,1,0.5,2,0.4,docmind_technical_architecture.txt
+B: BM25 Only,7,factual,What is the default batch size for embedding generation in DocMind?,1,1.0,1,0.41,docmind_technical_architecture.txt
+B: BM25 Only,8,factual,How many initial candidate chunks are retrieved before re-ranking is applied?,1,1.0,1,0.44,docmind_technical_architecture.txt
+B: BM25 Only,9,factual,What is the primary cloud LLM provider and default model in DocMind?,1,1.0,1,0.44,docmind_technical_architecture.txt
+B: BM25 Only,10,factual,What local LLM instance and models are supported as a secondary fallback?,1,1.0,1,0.45,docmind_technical_architecture.txt
+B: BM25 Only,11,factual,What are the core working hours for full-time employees at CloudCorp?,1,1.0,1,0.42,cloudcorp_operations_and_policies.txt
+B: BM25 Only,12,factual,How much is the one-time remote home office stipend provided to full-time employees?,1,1.0,1,0.48,cloudcorp_operations_and_policies.txt
+B: BM25 Only,13,factual,How many days of annual paid vacation (PTO) do CloudCorp employees accrue per year?,1,1.0,1,0.52,cloudcorp_operations_and_policies.txt
+B: BM25 Only,14,factual,What is the paid parental leave entitlement for primary caregivers at CloudCorp?,1,1.0,1,0.48,cloudcorp_operations_and_policies.txt
+B: BM25 Only,15,factual,What is the annual deductible for CloudCorp Health Insurance Tier A (Comprehensive Gold)?,1,1.0,1,0.47,cloudcorp_operations_and_policies.txt
+B: BM25 Only,16,factual,Within what timeframe must suspected security incidents or credential leaks be reported at CloudCorp?,1,1.0,1,0.51,cloudcorp_operations_and_policies.txt
+B: BM25 Only,17,factual,What is the uptime percentage guaranteed by DocMind Enterprise Mission-Critical Tier?,1,1.0,1,0.42,enterprise_sla_and_billing.txt
+B: BM25 Only,18,factual,When are the regular scheduled weekly maintenance windows for DocMind Cloud?,1,1.0,1,0.44,enterprise_sla_and_billing.txt
+B: BM25 Only,19,factual,What rate limit in requests per minute (RPM) is enforced for Enterprise Tier customers?,1,1.0,1,0.49,enterprise_sla_and_billing.txt
+B: BM25 Only,20,factual,What is the storage cost per GB per month for Tier 1 High-Performance SSD Vector Storage?,1,1.0,1,0.55,enterprise_sla_and_billing.txt
+B: BM25 Only,21,factual,What is the target initial response time for Severity 1 critical outage incidents?,1,1.0,1,0.48,enterprise_sla_and_billing.txt
+B: BM25 Only,22,factual,How many days do customers have to export their data following contract termination?,1,1.0,1,0.47,enterprise_sla_and_billing.txt
+B: BM25 Only,23,factual,What standard is used to cryptographically purge tenant data on day 46 post-termination?,1,1.0,1,0.46,enterprise_sla_and_billing.txt
+B: BM25 Only,24,factual,What is the hourly compute cost for dedicated GPU re-ranker workers?,1,1.0,1,0.42,enterprise_sla_and_billing.txt
+B: BM25 Only,25,factual,How many rows are grouped per block chunk during tabular ingestion in DocMind?,1,1.0,1,0.47,docmind_technical_architecture.txt
+B: BM25 Only,26,multi-chunk,Explain how DocMind handles hybrid search candidate retrieval and subsequent neural re-ranking from top candidates down to final context.,1,1.0,1,0.65,docmind_technical_architecture.txt
+B: BM25 Only,27,multi-chunk,"What are the total equipment, internet, and wellness allowances an employee at CloudCorp can receive in their first year?",1,0.5,2,0.63,cloudcorp_operations_and_policies.txt
+B: BM25 Only,28,multi-chunk,"Compare the monthly uptime guarantees, allowed downtime, and rate limits between DocMind Standard Tier and Enterprise Tier.",1,1.0,1,0.59,enterprise_sla_and_billing.txt
+B: BM25 Only,29,multi-chunk,How does DocMind ensure data privacy during user authentication and subsequent vector database storage?,1,1.0,1,0.49,docmind_technical_architecture.txt
+B: BM25 Only,30,multi-chunk,What is the full lifecycle process for customer data from initial contract termination through export and final destruction?,1,1.0,1,0.69,enterprise_sla_and_billing.txt
+B: BM25 Only,31,keyword-heavy,What is the exact expense code for the remote home office stipend and what is the policy form code for consecutive sick leave exceeding 3 days?,1,1.0,1,0.85,cloudcorp_operations_and_policies.txt
+B: BM25 Only,32,keyword-heavy,"What is the exact billing schedule code for SLA credits, what ticket code must be quoted when filing, and what HTTP error code is returned for rate limit violations?",1,1.0,1,0.86,enterprise_sla_and_billing.txt
+B: BM25 Only,33,keyword-heavy,"What is the exact document ID, revision number, and default GROQ_MODEL string specified in the DocMind Technical Architecture?",0,0.0,Miss,0.56,docmind_technical_architecture.txt
+B: BM25 Only,34,keyword-heavy,"What are the exact codes for the internet subsidy category, laptop refresh schedule, and wellness reimbursement program?",1,1.0,1,0.57,cloudcorp_operations_and_policies.txt
+B: BM25 Only,35,keyword-heavy,"What are the exact values of BM25_WEIGHT, FAISS_WEIGHT, RETRIEVAL_CANDIDATES, and FINAL_CONTEXT_K in DocMind?",1,1.0,1,0.45,docmind_technical_architecture.txt
+B: BM25 Only,36,unanswerable,What is the exact physical office address and floor number of CloudCorp headquarters in Tokyo?,N/A,N/A,Miss,0.5,cloudcorp_operations_and_policies.txt
+B: BM25 Only,37,unanswerable,What quantum encryption algorithm is planned for DocMind version 10 in the year 2035?,N/A,N/A,Miss,0.45,docmind_technical_architecture.txt
+B: BM25 Only,38,unanswerable,How many total shares of common stock were issued during CloudCorp's Series C funding round?,N/A,N/A,Miss,0.48,cloudcorp_operations_and_policies.txt
+B: BM25 Only,39,unanswerable,What is the monthly discount percentage for subscribing to a 5-year multi-region quantum storage contract in Antarctica?,N/A,N/A,Miss,0.52,enterprise_sla_and_billing.txt
+B: BM25 Only,40,unanswerable,What is the personal phone number and personal email of the DocMind chief executive officer?,N/A,N/A,Miss,0.49,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),1,factual,What embedding model is used by DocMind for dense vector indexing and what is its output dimension?,1,1.0,1,30.56,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),2,factual,What is the maximum allowed document upload size in DocMind?,1,1.0,1,27.32,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),3,factual,What default chunk size and chunk overlap are used for narrative documents?,1,1.0,1,27.91,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),4,factual,What algorithm does DocMind use to hash user passwords before saving them in SQLite?,1,1.0,1,28.26,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),5,factual,How long do JWT authentication tokens remain valid before expiring in DocMind?,1,1.0,1,27.31,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),6,factual,What cross-encoder model is utilized for neural re-ranking in DocMind?,1,1.0,1,30.26,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),7,factual,What is the default batch size for embedding generation in DocMind?,1,1.0,1,27.71,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),8,factual,How many initial candidate chunks are retrieved before re-ranking is applied?,1,1.0,1,26.09,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),9,factual,What is the primary cloud LLM provider and default model in DocMind?,1,1.0,1,25.69,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),10,factual,What local LLM instance and models are supported as a secondary fallback?,1,1.0,1,31.66,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),11,factual,What are the core working hours for full-time employees at CloudCorp?,1,1.0,1,34.48,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),12,factual,How much is the one-time remote home office stipend provided to full-time employees?,1,1.0,1,28.7,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),13,factual,How many days of annual paid vacation (PTO) do CloudCorp employees accrue per year?,1,1.0,1,31.13,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),14,factual,What is the paid parental leave entitlement for primary caregivers at CloudCorp?,1,1.0,1,26.18,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),15,factual,What is the annual deductible for CloudCorp Health Insurance Tier A (Comprehensive Gold)?,1,1.0,1,27.13,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),16,factual,Within what timeframe must suspected security incidents or credential leaks be reported at CloudCorp?,1,1.0,1,26.18,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),17,factual,What is the uptime percentage guaranteed by DocMind Enterprise Mission-Critical Tier?,1,1.0,1,24.99,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),18,factual,When are the regular scheduled weekly maintenance windows for DocMind Cloud?,1,1.0,1,24.87,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),19,factual,What rate limit in requests per minute (RPM) is enforced for Enterprise Tier customers?,1,1.0,1,25.24,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),20,factual,What is the storage cost per GB per month for Tier 1 High-Performance SSD Vector Storage?,1,1.0,1,26.35,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),21,factual,What is the target initial response time for Severity 1 critical outage incidents?,1,1.0,1,24.7,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),22,factual,How many days do customers have to export their data following contract termination?,1,1.0,1,25.22,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),23,factual,What standard is used to cryptographically purge tenant data on day 46 post-termination?,1,1.0,1,25.53,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),24,factual,What is the hourly compute cost for dedicated GPU re-ranker workers?,1,1.0,1,27.06,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),25,factual,How many rows are grouped per block chunk during tabular ingestion in DocMind?,1,1.0,1,37.98,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),26,multi-chunk,Explain how DocMind handles hybrid search candidate retrieval and subsequent neural re-ranking from top candidates down to final context.,1,1.0,1,41.01,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),27,multi-chunk,"What are the total equipment, internet, and wellness allowances an employee at CloudCorp can receive in their first year?",1,1.0,1,45.7,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),28,multi-chunk,"Compare the monthly uptime guarantees, allowed downtime, and rate limits between DocMind Standard Tier and Enterprise Tier.",1,1.0,1,46.34,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),29,multi-chunk,How does DocMind ensure data privacy during user authentication and subsequent vector database storage?,1,1.0,1,33.79,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),30,multi-chunk,What is the full lifecycle process for customer data from initial contract termination through export and final destruction?,1,1.0,1,32.28,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),31,keyword-heavy,What is the exact expense code for the remote home office stipend and what is the policy form code for consecutive sick leave exceeding 3 days?,1,1.0,1,35.77,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),32,keyword-heavy,"What is the exact billing schedule code for SLA credits, what ticket code must be quoted when filing, and what HTTP error code is returned for rate limit violations?",1,1.0,1,36.74,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),33,keyword-heavy,"What is the exact document ID, revision number, and default GROQ_MODEL string specified in the DocMind Technical Architecture?",1,0.3333,3,36.44,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),34,keyword-heavy,"What are the exact codes for the internet subsidy category, laptop refresh schedule, and wellness reimbursement program?",1,1.0,1,36.02,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),35,keyword-heavy,"What are the exact values of BM25_WEIGHT, FAISS_WEIGHT, RETRIEVAL_CANDIDATES, and FINAL_CONTEXT_K in DocMind?",1,1.0,1,44.18,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),36,unanswerable,What is the exact physical office address and floor number of CloudCorp headquarters in Tokyo?,N/A,N/A,Miss,39.35,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),37,unanswerable,What quantum encryption algorithm is planned for DocMind version 10 in the year 2035?,N/A,N/A,Miss,36.13,docmind_technical_architecture.txt
+C: Hybrid (FAISS + BM25),38,unanswerable,How many total shares of common stock were issued during CloudCorp's Series C funding round?,N/A,N/A,Miss,38.47,cloudcorp_operations_and_policies.txt
+C: Hybrid (FAISS + BM25),39,unanswerable,What is the monthly discount percentage for subscribing to a 5-year multi-region quantum storage contract in Antarctica?,N/A,N/A,Miss,29.77,enterprise_sla_and_billing.txt
+C: Hybrid (FAISS + BM25),40,unanswerable,What is the personal phone number and personal email of the DocMind chief executive officer?,N/A,N/A,Miss,29.48,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,1,factual,What embedding model is used by DocMind for dense vector indexing and what is its output dimension?,1,1.0,1,3880.61,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,2,factual,What is the maximum allowed document upload size in DocMind?,1,1.0,1,1156.36,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,3,factual,What default chunk size and chunk overlap are used for narrative documents?,1,1.0,1,1438.76,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,4,factual,What algorithm does DocMind use to hash user passwords before saving them in SQLite?,1,1.0,1,1500.46,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,5,factual,How long do JWT authentication tokens remain valid before expiring in DocMind?,1,1.0,1,1401.01,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,6,factual,What cross-encoder model is utilized for neural re-ranking in DocMind?,1,0.5,2,1475.57,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,7,factual,What is the default batch size for embedding generation in DocMind?,1,1.0,1,1203.39,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,8,factual,How many initial candidate chunks are retrieved before re-ranking is applied?,1,1.0,1,1286.94,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,9,factual,What is the primary cloud LLM provider and default model in DocMind?,1,1.0,1,1441.35,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,10,factual,What local LLM instance and models are supported as a secondary fallback?,1,1.0,1,1452.0,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,11,factual,What are the core working hours for full-time employees at CloudCorp?,1,1.0,1,1089.98,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,12,factual,How much is the one-time remote home office stipend provided to full-time employees?,1,1.0,1,2161.94,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,13,factual,How many days of annual paid vacation (PTO) do CloudCorp employees accrue per year?,1,1.0,1,3310.28,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,14,factual,What is the paid parental leave entitlement for primary caregivers at CloudCorp?,1,1.0,1,4692.38,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,15,factual,What is the annual deductible for CloudCorp Health Insurance Tier A (Comprehensive Gold)?,1,1.0,1,2879.6,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,16,factual,Within what timeframe must suspected security incidents or credential leaks be reported at CloudCorp?,1,1.0,1,4605.71,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,17,factual,What is the uptime percentage guaranteed by DocMind Enterprise Mission-Critical Tier?,1,1.0,1,1537.15,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,18,factual,When are the regular scheduled weekly maintenance windows for DocMind Cloud?,1,1.0,1,1476.38,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,19,factual,What rate limit in requests per minute (RPM) is enforced for Enterprise Tier customers?,1,1.0,1,1303.18,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,20,factual,What is the storage cost per GB per month for Tier 1 High-Performance SSD Vector Storage?,1,1.0,1,2271.72,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,21,factual,What is the target initial response time for Severity 1 critical outage incidents?,1,1.0,1,2066.93,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,22,factual,How many days do customers have to export their data following contract termination?,1,1.0,1,2179.88,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,23,factual,What standard is used to cryptographically purge tenant data on day 46 post-termination?,1,1.0,1,3083.14,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,24,factual,What is the hourly compute cost for dedicated GPU re-ranker workers?,1,1.0,1,1900.09,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,25,factual,How many rows are grouped per block chunk during tabular ingestion in DocMind?,1,1.0,1,1734.86,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,26,multi-chunk,Explain how DocMind handles hybrid search candidate retrieval and subsequent neural re-ranking from top candidates down to final context.,1,1.0,1,1397.21,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,27,multi-chunk,"What are the total equipment, internet, and wellness allowances an employee at CloudCorp can receive in their first year?",1,1.0,1,1735.1,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,28,multi-chunk,"Compare the monthly uptime guarantees, allowed downtime, and rate limits between DocMind Standard Tier and Enterprise Tier.",1,1.0,1,1545.97,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,29,multi-chunk,How does DocMind ensure data privacy during user authentication and subsequent vector database storage?,1,1.0,1,1170.63,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,30,multi-chunk,What is the full lifecycle process for customer data from initial contract termination through export and final destruction?,1,1.0,1,1412.29,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,31,keyword-heavy,What is the exact expense code for the remote home office stipend and what is the policy form code for consecutive sick leave exceeding 3 days?,1,1.0,1,1202.45,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,32,keyword-heavy,"What is the exact billing schedule code for SLA credits, what ticket code must be quoted when filing, and what HTTP error code is returned for rate limit violations?",1,1.0,1,1757.99,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,33,keyword-heavy,"What is the exact document ID, revision number, and default GROQ_MODEL string specified in the DocMind Technical Architecture?",1,1.0,1,4373.58,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,34,keyword-heavy,"What are the exact codes for the internet subsidy category, laptop refresh schedule, and wellness reimbursement program?",1,1.0,1,4075.79,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,35,keyword-heavy,"What are the exact values of BM25_WEIGHT, FAISS_WEIGHT, RETRIEVAL_CANDIDATES, and FINAL_CONTEXT_K in DocMind?",1,1.0,1,5944.03,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,36,unanswerable,What is the exact physical office address and floor number of CloudCorp headquarters in Tokyo?,N/A,N/A,Miss,3563.17,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,37,unanswerable,What quantum encryption algorithm is planned for DocMind version 10 in the year 2035?,N/A,N/A,Miss,3174.56,docmind_technical_architecture.txt
+D: Hybrid + CrossEncoder,38,unanswerable,How many total shares of common stock were issued during CloudCorp's Series C funding round?,N/A,N/A,Miss,2849.93,cloudcorp_operations_and_policies.txt
+D: Hybrid + CrossEncoder,39,unanswerable,What is the monthly discount percentage for subscribing to a 5-year multi-region quantum storage contract in Antarctica?,N/A,N/A,Miss,3404.59,enterprise_sla_and_billing.txt
+D: Hybrid + CrossEncoder,40,unanswerable,What is the personal phone number and personal email of the DocMind chief executive officer?,N/A,N/A,Miss,2835.86,docmind_technical_architecture.txt

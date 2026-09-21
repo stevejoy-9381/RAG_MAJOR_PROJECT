@@ -102,7 +102,7 @@ def get_prompt_template() -> PromptTemplate:
 Your job is to answer the user's question using ONLY the context provided below.
 Do NOT use any knowledge from outside this context.
 If the answer is not present in the context, respond with:
-"I don't know — the answer is not in the provided document."
+"I don't know — this isn't covered in the uploaded documents."
 
 Context:
 ────────────────────────────────────
@@ -112,11 +112,10 @@ Context:
 Question: {question}
 
 Instructions:
-- Answer directly and concisely.
-- Answer in the same language the question was asked in, when possible, even if the source context is in a different language.
-- If the answer spans multiple sections, combine them clearly.
-- If you reference a specific fact, mention which part of the context it came from.
-- Do not make up information.
+- Answer directly, factually, and concisely based strictly on the context above.
+- CITATION RULE: Each retrieved chunk is labeled with [Source: filename, Page: N]. You MUST cite the source filename in brackets (e.g. [Source: filename.ext]) directly after each factual claim or statement.
+- If multiple chunks support your answer, cite each relevant filename.
+- If the answer is not in the context, strictly state: "I don't know — this isn't covered in the uploaded documents."
 
 Answer:"""
 

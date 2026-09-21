@@ -1,0 +1,482 @@
+[
+  {
+    "id": 1,
+    "question": "What financial assistance is allocated to newly hired telecommuting staff to help equip their home workstation?",
+    "expected_answer": "$1,500 one-time remote home office stipend for newly hired telecommuting employees.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 4: Remote Work & Equipment Stipend",
+    "type": "paraphrased"
+  },
+  {
+    "id": 2,
+    "question": "How many days off with pay can an employee take each year for relaxation and leisure?",
+    "expected_answer": "25 days of annual paid vacation (PTO) per calendar year.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 5: Paid Time Off & Parental Leave",
+    "type": "paraphrased"
+  },
+  {
+    "id": 3,
+    "question": "What is the maximum file payload volume permitted when transmitting a single record into the knowledge base?",
+    "expected_answer": "100 MB (104,857,600 bytes) via MAX_UPLOAD_SIZE_BYTES.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2: Document Ingestion & Storage Limits",
+    "type": "paraphrased"
+  },
+  {
+    "id": 4,
+    "question": "Which mathematical hashing technique secures stored login secret keys in the local user database?",
+    "expected_answer": "bcrypt with an adaptive salt work factor of 12 ($2b$12).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3: Authentication & Cryptography",
+    "type": "paraphrased"
+  },
+  {
+    "id": 5,
+    "question": "How long can a signed user session credential be actively utilized before re-authentication is mandated?",
+    "expected_answer": "1440 minutes (24 hours) via ACCESS_TOKEN_EXPIRE_MINUTES.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3: Authentication & Cryptography",
+    "type": "paraphrased"
+  },
+  {
+    "id": 6,
+    "question": "What model family is deployed during the secondary stage to refine candidate ranking order?",
+    "expected_answer": "cross-encoder/ms-marco-MiniLM-L-6-v2 cross-encoder model.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "paraphrased"
+  },
+  {
+    "id": 7,
+    "question": "How many text fragments are processed simultaneously in a single forward pass when computing semantic vectors?",
+    "expected_answer": "256 text chunks (EMBEDDING_BATCH_SIZE is set to 256).",
+    "source_file": "performance_tuning_and_vector_caching.txt",
+    "source_page_or_section": "Section 1: Embedding Generation Batching",
+    "type": "paraphrased"
+  },
+  {
+    "id": 8,
+    "question": "What is the guaranteed service availability commitment offered to top-tier enterprise accounts?",
+    "expected_answer": "99.99% monthly uptime SLA for Mission-Critical Enterprise Tier accounts.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 1: Monthly Availability Commitments",
+    "type": "paraphrased"
+  },
+  {
+    "id": 9,
+    "question": "How quickly must staff escalate an observed credentials disclosure or potential infiltration to administrators?",
+    "expected_answer": "Within 1 hour of discovery to security-incident@cloudcorp.com.",
+    "source_file": "cybersecurity_incident_response_runbook.pdf",
+    "source_page_or_section": "Page 1: Mandatory Escalation Timelines",
+    "type": "paraphrased"
+  },
+  {
+    "id": 10,
+    "question": "When does the operations team execute routine infrastructure patching and server restarts each week?",
+    "expected_answer": "Sundays between 02:00 UTC and 04:00 UTC.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 3: Maintenance Windows & Scheduling",
+    "type": "paraphrased"
+  },
+  {
+    "id": 11,
+    "question": "What is the monthly fee charged per gigabyte of fast solid-state drive capacity reserved for vector storage?",
+    "expected_answer": "$0.25 per GB per month for Tier 1 High-Performance SSD Vector Storage.",
+    "source_file": "infrastructure_pricing_and_costs.csv",
+    "source_page_or_section": "Row 1: STOR-SSD-01",
+    "type": "paraphrased"
+  },
+  {
+    "id": 12,
+    "question": "What is the time window allowed for departing corporate subscribers to download their stored data post-cancellation?",
+    "expected_answer": "30 calendar days following contract termination.",
+    "source_file": "data_retention_and_offboarding_policy.txt",
+    "source_page_or_section": "Section 2: Customer Export Window",
+    "type": "paraphrased"
+  },
+  {
+    "id": 13,
+    "question": "What protocol is mandated for irreversibly sanitizing electronic media after the export grace period expires?",
+    "expected_answer": "NIST SP 800-88 Rev 1 Guidelines for Media Sanitization using Cryptographic Erase (CE).",
+    "source_file": "data_retention_and_offboarding_policy.txt",
+    "source_page_or_section": "Section 4: Final Cryptographic Sanitization",
+    "type": "paraphrased"
+  },
+  {
+    "id": 14,
+    "question": "What is the hourly expense associated with spinning up dedicated graphics processing units for score re-ranking?",
+    "expected_answer": "$3.50 per hour for dedicated GPU re-ranker worker (NVIDIA A10G 24GB VRAM).",
+    "source_file": "infrastructure_pricing_and_costs.csv",
+    "source_page_or_section": "Row 3: COMP-GPU-01",
+    "type": "paraphrased"
+  },
+  {
+    "id": 15,
+    "question": "What target timeframe is pledged for initial human contact when a production-stopping outage is flagged?",
+    "expected_answer": "15 minutes initial human response target for Severity 1 (Critical Outage).",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 2: Incident Response Classifications",
+    "type": "paraphrased"
+  },
+  {
+    "id": 16,
+    "question": "How much out-of-pocket medical expenditure must an individual pay before coverage kicks in under Tier A benefits?",
+    "expected_answer": "$500 individual annual deductible under Tier A (Comprehensive Gold).",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 6: Health Insurance Plan Options",
+    "type": "paraphrased"
+  },
+  {
+    "id": 17,
+    "question": "What is the duration of fully salaried leave granted to an employee assuming primary infant responsibilities?",
+    "expected_answer": "16 weeks of 100% paid parental leave for primary caregivers.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 5: Paid Time Off & Parental Leave",
+    "type": "paraphrased"
+  },
+  {
+    "id": 18,
+    "question": "What ceiling is placed on incoming API transaction volume per minute for top enterprise organizations?",
+    "expected_answer": "5,000 requests per minute (RPM) for Enterprise Tier accounts.",
+    "source_file": "api_rate_limits_and_quotas.docx",
+    "source_page_or_section": "Section 1: Tier Quotas in Requests Per Minute (RPM)",
+    "type": "paraphrased"
+  },
+  {
+    "id": 19,
+    "question": "What local offline language model framework handles prompt queries if cloud connectivity drops?",
+    "expected_answer": "Local Ollama daemon running at http://localhost:11434 with llama3.1:8b or mistral:7b.",
+    "source_file": "dual_llm_gateway_and_failover_spec.pdf",
+    "source_page_or_section": "Page 1: Local Fallback Daemon",
+    "type": "paraphrased"
+  },
+  {
+    "id": 20,
+    "question": "What character count and redundancy margin define how narrative content is partitioned prior to indexing?",
+    "expected_answer": "CHUNK_SIZE of 800 characters and CHUNK_OVERLAP of 100 characters.",
+    "source_file": "performance_tuning_and_vector_caching.txt",
+    "source_page_or_section": "Section 2: Document Partitioning (Chunking)",
+    "type": "paraphrased"
+  },
+  {
+    "id": 21,
+    "question": "What exact value is assigned to the configuration parameter MAX_UPLOAD_SIZE_BYTES?",
+    "expected_answer": "104857600 bytes (100 MB).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2: Document Ingestion & Storage Limits",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 22,
+    "question": "What exact model string is specified for sentence-transformers/all-MiniLM-L6-v2 vector generation?",
+    "expected_answer": "sentence-transformers/all-MiniLM-L6-v2.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 23,
+    "question": "What is the configured numerical constant for RETRIEVAL_CANDIDATES in the backend settings?",
+    "expected_answer": "10 candidate chunks (RETRIEVAL_CANDIDATES = 10).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 24,
+    "question": "What is the exact name of the re-ranking model cross-encoder/ms-marco-MiniLM-L-6-v2?",
+    "expected_answer": "cross-encoder/ms-marco-MiniLM-L-6-v2.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 25,
+    "question": "What numerical values are assigned to BM25_WEIGHT and FAISS_WEIGHT in the hybrid search configuration?",
+    "expected_answer": "BM25_WEIGHT = 0.4 and FAISS_WEIGHT = 0.6.",
+    "source_file": "performance_tuning_and_vector_caching.txt",
+    "source_page_or_section": "Section 3: Hybrid Search Weighting Optimization",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 26,
+    "question": "What is the exact output vector dimensionality produced by all-MiniLM-L6-v2?",
+    "expected_answer": "384 dimensions.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 27,
+    "question": "What exact model identifier is specified under GROQ_MODEL in DocMind's primary configuration?",
+    "expected_answer": "qwen/qwen3.8-27b.",
+    "source_file": "dual_llm_gateway_and_failover_spec.pdf",
+    "source_page_or_section": "Page 1: Primary Cloud Provider",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 28,
+    "question": "What port and URL endpoint does DocMind use to poll the local Ollama daemon (e.g. http://localhost:11434)?",
+    "expected_answer": "http://localhost:11434 (port 11434).",
+    "source_file": "dual_llm_gateway_and_failover_spec.pdf",
+    "source_page_or_section": "Page 1: Local Fallback Daemon",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 29,
+    "question": "What is the exact numerical integer value set for ACCESS_TOKEN_EXPIRE_MINUTES?",
+    "expected_answer": "1440 minutes.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3: Authentication & Cryptography",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 30,
+    "question": "What HTTP status code is raised when an uploaded document exceeds 100 MB?",
+    "expected_answer": "HTTP 413 (Payload Too Large).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2: Document Ingestion & Storage Limits",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 31,
+    "question": "What exact compliance standard code is referenced for sanitizing persistent vector stores (e.g. NIST SP 800-88 Rev 1)?",
+    "expected_answer": "NIST SP 800-88 Rev 1.",
+    "source_file": "data_retention_and_offboarding_policy.txt",
+    "source_page_or_section": "Section 4: Final Cryptographic Sanitization",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 32,
+    "question": "What rate limit figure in RPM is applied under Enterprise Tier service agreements?",
+    "expected_answer": "5,000 RPM (requests per minute).",
+    "source_file": "api_rate_limits_and_quotas.docx",
+    "source_page_or_section": "Section 1: Tier Quotas in Requests Per Minute (RPM)",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 33,
+    "question": "What is the exact constant value assigned to CHUNK_SIZE and CHUNK_OVERLAP in src/config.py?",
+    "expected_answer": "CHUNK_SIZE=800 and CHUNK_OVERLAP=100.",
+    "source_file": "performance_tuning_and_vector_caching.txt",
+    "source_page_or_section": "Section 2: Document Partitioning (Chunking)",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 34,
+    "question": "What exact bcrypt work factor salt iteration count ($2b$12) is enforced during user password hashing?",
+    "expected_answer": "Work factor 12 ($2b$12).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3: Authentication & Cryptography",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 35,
+    "question": "What is the exact parameter name and value for FINAL_CONTEXT_K?",
+    "expected_answer": "FINAL_CONTEXT_K = 4.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4: Retrieval & Re-ranking Pipeline",
+    "type": "keyword_heavy"
+  },
+  {
+    "id": 36,
+    "question": "What is the total combined financial package an employee can claim for home equipment, including the one-time stipend, monthly internet subsidy, and ergonomic wellness allowance?",
+    "expected_answer": "$2,700 first-year total ($1,500 one-time stipend + $900 annual internet subsidy [$75/mo] + $300 annual ergonomic allowance).",
+    "source_file": "remote_work_allowances_and_expenses.csv; cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Allowances CSV & Handbook Section 4",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 37,
+    "question": "How do the maintenance window schedule, notification advance notice period, and monthly availability SLA percentage interact during planned infrastructure downtime?",
+    "expected_answer": "Maintenance is conducted Sundays 02:00-04:00 UTC with at least 72 hours advance notice, and scheduled downtime is excluded from monthly uptime calculations.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Pages 1 & 3: SLA & Maintenance",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 38,
+    "question": "Explain the end-to-end data lifecycle for a terminating tenant, detailing the export grace window, secure archival duration, and final NIST purge execution.",
+    "expected_answer": "Days 1-30: customer self-service data export window; Days 31-45: data frozen in cold storage; Day 46: permanent purge per NIST SP 800-88 Rev 1.",
+    "source_file": "data_retention_and_offboarding_policy.txt",
+    "source_page_or_section": "Sections 2, 3, 4: Tenant Data Lifecycle",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 39,
+    "question": "How do initial candidate retrieval count (RETRIEVAL_CANDIDATES), CrossEncoder re-ranking, and final context count (FINAL_CONTEXT_K) work together in the retrieval pipeline?",
+    "expected_answer": "Hybrid search retrieves 10 candidates (RETRIEVAL_CANDIDATES), CrossEncoder re-ranks all 10 candidates, and the top 4 chunks (FINAL_CONTEXT_K) are passed to the LLM context.",
+    "source_file": "docmind_technical_architecture.txt; performance_tuning_and_vector_caching.txt",
+    "source_page_or_section": "Architecture Spec & Performance Tuning",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 40,
+    "question": "What are all the security measures applied to user credentials, from password hashing during registration to JWT token generation, lifetime validation, and multi-tenant vector partitioning?",
+    "expected_answer": "bcrypt password hashing (work factor 12), HMAC-SHA256 JWT tokens with 24-hour expiration, AES-256 data at rest encryption, and per-user isolated directory partitioning.",
+    "source_file": "docmind_technical_architecture.txt; compliance_and_data_privacy_manual.pdf",
+    "source_page_or_section": "Architecture Section 3 & Manual Page 5",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 41,
+    "question": "Compare the response time SLAs, dedicated communication channels, and escalation paths for Severity 1 versus Severity 2 incidents.",
+    "expected_answer": "Severity 1: 15-minute response SLA via emergency phone bridge, SMS paging, and dedicated Slack Connect channel; Severity 2: 2-hour response SLA via high-priority ticketing portal and email.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf; customer_support_tiers_and_escalations.docx",
+    "source_page_or_section": "SLA Page 2 & Support Channels Section 1",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 42,
+    "question": "What are the combined requirements for reporting a suspected security breach, preserving device logs, and notifying enterprise clients under the corporate incident response policy?",
+    "expected_answer": "Staff must report suspected breaches within 1 hour, immediately isolate VPC security groups without rebooting to preserve forensic memory/logs, and notify affected enterprise clients within 72 hours.",
+    "source_file": "cybersecurity_incident_response_runbook.pdf",
+    "source_page_or_section": "Pages 1 & 2: Escalation & Evidence Preservation",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 43,
+    "question": "Calculate the total estimated monthly cost for an enterprise tenant deploying 500 GB of Tier 1 SSD vector storage and utilizing 160 hours of dedicated GPU re-ranker instances.",
+    "expected_answer": "$685.00 total monthly cost (500 GB * $0.25/GB = $125.00 for storage + 160 hours * $3.50/hr = $560.00 for dedicated GPU).",
+    "source_file": "infrastructure_pricing_and_costs.csv; quarterly_cloud_billing_summary_q3.csv",
+    "source_page_or_section": "Pricing CSV & Q3 Billing CSV",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 44,
+    "question": "Synthesize the health insurance plan options by detailing the deductibles, out-of-pocket maximums, and employer HSA contribution differences between Tier A (Gold) and Tier B (Silver).",
+    "expected_answer": "Tier A (Gold): $500 individual deductible, $2,500 max out-of-pocket, $1,000 employer HSA; Tier B (Silver): $1,500 individual deductible, $4,500 max out-of-pocket, $500 employer HSA.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 6: Health Insurance Plan Options",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 45,
+    "question": "Describe the complete dual-LLM fallback architecture, including primary cloud connection handling, healthcheck timeouts, fallback trigger conditions, and local Ollama model options.",
+    "expected_answer": "Primary requests route to Groq Cloud API (qwen/qwen3.8-27b) with a 2,500ms timeout; on HTTP 429, 5xx, or network failure, the router automatically fails over to local Ollama (llama3.1:8b or mistral:7b) at http://localhost:11434.",
+    "source_file": "dual_llm_gateway_and_failover_spec.pdf",
+    "source_page_or_section": "Pages 1 & 2: Primary Provider & Auto Failover",
+    "type": "multi_chunk"
+  },
+  {
+    "id": 46,
+    "question": "What is the annual deductible for Health Plan Tier B (Silver Comprehensive), and how does it differ from Tier A?",
+    "expected_answer": "Tier B annual individual deductible is $1,500, which is $1,000 higher than Tier A's $500 deductible.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 6: Health Insurance Plan Options",
+    "type": "near_miss"
+  },
+  {
+    "id": 47,
+    "question": "What is the uptime guarantee for the Business Standard Tier compared to the Mission-Critical Enterprise Tier?",
+    "expected_answer": "Business Standard Tier guarantees 99.5% uptime, whereas Mission-Critical Enterprise Tier guarantees 99.99% uptime.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 1: Monthly Availability Commitments",
+    "type": "near_miss"
+  },
+  {
+    "id": 48,
+    "question": "What is the paid parental leave entitlement for secondary caregivers versus primary caregivers?",
+    "expected_answer": "Secondary caregivers receive 6 weeks of paid parental leave, whereas primary caregivers receive 16 weeks.",
+    "source_file": "cloudcorp_employee_handbook.docx",
+    "source_page_or_section": "Section 5: Paid Time Off & Parental Leave",
+    "type": "near_miss"
+  },
+  {
+    "id": 49,
+    "question": "What is the initial response SLA for Severity 2 (Major Degradation) incidents versus Severity 1 (Critical Outage)?",
+    "expected_answer": "Severity 2 has an initial response target of 2 hours, compared to Severity 1 which has a 15-minute target.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 2: Incident Response Classifications",
+    "type": "near_miss"
+  },
+  {
+    "id": 50,
+    "question": "What is the storage cost per GB per month for Tier 2 Standard Cold Archival Storage compared to Tier 1 SSD Vector Storage?",
+    "expected_answer": "Tier 2 Standard Cold Archival Storage is $0.04/GB/month, whereas Tier 1 SSD Vector Storage is $0.25/GB/month ($0.21/GB difference).",
+    "source_file": "infrastructure_pricing_and_costs.csv",
+    "source_page_or_section": "Rows 1 & 2: STOR-SSD-01 & STOR-COLD-02",
+    "type": "near_miss"
+  },
+  {
+    "id": 51,
+    "question": "What rate limit in requests per minute (RPM) is applied to Professional Tier users compared to Enterprise Tier users?",
+    "expected_answer": "Professional Tier is capped at 1,200 RPM, whereas Enterprise Tier is capped at 5,000 RPM.",
+    "source_file": "api_rate_limits_and_quotas.docx",
+    "source_page_or_section": "Section 1: Tier Quotas in Requests Per Minute (RPM)",
+    "type": "near_miss"
+  },
+  {
+    "id": 52,
+    "question": "What is the annual PTO rollover cap for employees with under 3 years of tenure versus employees with over 3 years?",
+    "expected_answer": "Employees with under 3 years tenure can roll over up to 5 days, while employees with 3 or more years tenure can roll over up to 10 days.",
+    "source_file": "cloudcorp_pto_and_leave_rollover_policy.pdf",
+    "source_page_or_section": "Page 1: Year-End Rollover Limitations",
+    "type": "near_miss"
+  },
+  {
+    "id": 53,
+    "question": "What is the service credit percentage if monthly uptime falls below 99.0% versus falling between 99.0% and 99.9%?",
+    "expected_answer": "If uptime is between 99.0% and 99.9%, customers receive a 10% credit; if uptime is below 99.0%, customers receive a 25% credit.",
+    "source_file": "enterprise_sla_and_billing_v2.pdf",
+    "source_page_or_section": "Page 1: Service Credits for Outages",
+    "type": "near_miss"
+  },
+  {
+    "id": 54,
+    "question": "What is the token limit for Groq Qwen-27B requests compared to the local Ollama LLaMA-8B context window?",
+    "expected_answer": "Groq Qwen-27B has an 8,192 token context window, whereas local Ollama LLaMA-8B has a 4,096 token context window.",
+    "source_file": "dual_llm_gateway_and_failover_spec.pdf",
+    "source_page_or_section": "Page 1: Dual LLM Gateway Spec",
+    "type": "near_miss"
+  },
+  {
+    "id": 55,
+    "question": "How does the annual continuous education stipend differ for technical engineering staff versus sales and operations staff?",
+    "expected_answer": "Technical engineering staff receive $2,500 per calendar year, whereas sales, marketing, and operations staff receive $1,000 per calendar year.",
+    "source_file": "engineering_education_and_conference_stipends.txt",
+    "source_page_or_section": "Section 1: Annual Professional Development Budget",
+    "type": "near_miss"
+  },
+  {
+    "id": 56,
+    "question": "What is the company policy regarding international relocation and visa sponsorship for permanent work in Tokyo, Japan?",
+    "expected_answer": "I don't know \u2014 this isn't covered in the uploaded documents.",
+    "source_file": "NONE",
+    "source_page_or_section": "N/A",
+    "type": "unanswerable"
+  },
+  {
+    "id": 57,
+    "question": "What quantum computing hardware accelerators are supported by DocMind for vector similarity acceleration?",
+    "expected_answer": "I don't know \u2014 this isn't covered in the uploaded documents.",
+    "source_file": "NONE",
+    "source_page_or_section": "N/A",
+    "type": "unanswerable"
+  },
+  {
+    "id": 58,
+    "question": "How much annual stock grant equity (RSUs) is awarded to senior executives upon contract renewal?",
+    "expected_answer": "I don't know \u2014 this isn't covered in the uploaded documents.",
+    "source_file": "NONE",
+    "source_page_or_section": "N/A",
+    "type": "unanswerable"
+  },
+  {
+    "id": 59,
+    "question": "What is the reimbursement procedure for personal pet insurance and veterinary clinical expenses?",
+    "expected_answer": "I don't know \u2014 this isn't covered in the uploaded documents.",
+    "source_file": "NONE",
+    "source_page_or_section": "N/A",
+    "type": "unanswerable"
+  },
+  {
+    "id": 60,
+    "question": "What specific blockchain consensus mechanism does DocMind use to validate document ingestion logs?",
+    "expected_answer": "I don't know \u2014 this isn't covered in the uploaded documents.",
+    "source_file": "NONE",
+    "source_page_or_section": "N/A",
+    "type": "unanswerable"
+  }
+]

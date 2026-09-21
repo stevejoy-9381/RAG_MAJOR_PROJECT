@@ -1,0 +1,24 @@
+{
+  "test_1_groq_failover_to_ollama": {
+    "status": "PASS",
+    "active_provider": "ollama",
+    "simulated_condition": "Invalid Groq API key, Ollama online",
+    "model_used": "llama3.1:8b",
+    "response_sample": "DocMind guarantees 99.99% monthly uptime for Mission-Critical Enterprise Tier.",
+    "conclusion": "Groq failure successfully routed to local Ollama with zero client crash."
+  },
+  "test_2_offline_mode_error": {
+    "status": "PASS",
+    "simulated_condition": "Ollama offline, mode='offline'",
+    "exception_type": "ConnectionError",
+    "error_message": "Offline mode requested but Ollama model is not reachable at http://localhost:11434.",
+    "conclusion": "Clean user-facing ConnectionError raised without unhandled crash."
+  },
+  "test_3_both_providers_unavailable": {
+    "status": "PASS",
+    "simulated_condition": "Ollama offline AND GROQ_API_KEY missing/empty",
+    "exception_type": "RuntimeError",
+    "error_message": "No LLM provider available. Either start Ollama locally or set GROQ_API_KEY in your .env file.",
+    "conclusion": "Clean RuntimeError raised guiding user to start Ollama or configure Groq key."
+  }
+}

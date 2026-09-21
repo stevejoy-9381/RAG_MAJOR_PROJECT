@@ -1,0 +1,5 @@
+invoice_id,billing_period,customer_account,ssd_storage_gb,gpu_hours,api_calls_millions,total_billed_usd,payment_status
+INV-2026-Q3-001,2026-Q3,Acme Enterprise Corp,500,160.0,12.4,685.0,Paid
+INV-2026-Q3-002,2026-Q3,Global Logistics Ltd,1200,420.0,38.9,1770.0,Paid
+INV-2026-Q3-003,2026-Q3,Apex Financial Partners,350,80.0,6.2,367.5,Paid
+INV-2026-Q3-004,2026-Q3,Starlight Healthcare,2400,850.0,75.1,3575.0,Pending

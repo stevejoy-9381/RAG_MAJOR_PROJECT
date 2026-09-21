@@ -1,0 +1,8 @@
+{
+  "total_questions": 60,
+  "citation_accuracy_before_pct": 8.33,
+  "citation_accuracy_after_pct": 50.0,
+  "absolute_improvement_pct": 41.67,
+  "post_generation_fallbacks_applied": 0,
+  "fallback_rate_pct": 0.0
+}

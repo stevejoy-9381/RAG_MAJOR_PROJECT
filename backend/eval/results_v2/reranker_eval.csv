@@ -1,0 +1,301 @@
+variant,question_id,type,hit_at_4,mrr,rank,latency_ms
+No Re-ranking (Hybrid Top 4),1,paraphrased,1,1.0,1,330.33
+No Re-ranking (Hybrid Top 4),2,paraphrased,1,0.3333,3,31.29
+No Re-ranking (Hybrid Top 4),3,paraphrased,1,1.0,1,32.12
+No Re-ranking (Hybrid Top 4),4,paraphrased,1,0.5,2,24.0
+No Re-ranking (Hybrid Top 4),5,paraphrased,1,1.0,1,23.78
+No Re-ranking (Hybrid Top 4),6,paraphrased,1,0.5,2,21.64
+No Re-ranking (Hybrid Top 4),7,paraphrased,1,1.0,1,21.82
+No Re-ranking (Hybrid Top 4),8,paraphrased,1,1.0,1,22.1
+No Re-ranking (Hybrid Top 4),9,paraphrased,1,1.0,1,27.27
+No Re-ranking (Hybrid Top 4),10,paraphrased,1,1.0,1,26.08
+No Re-ranking (Hybrid Top 4),11,paraphrased,1,0.3333,3,28.07
+No Re-ranking (Hybrid Top 4),12,paraphrased,1,1.0,1,26.32
+No Re-ranking (Hybrid Top 4),13,paraphrased,1,0.5,2,27.15
+No Re-ranking (Hybrid Top 4),14,paraphrased,0,0.0,-1,24.29
+No Re-ranking (Hybrid Top 4),15,paraphrased,1,1.0,1,25.21
+No Re-ranking (Hybrid Top 4),16,paraphrased,1,1.0,1,25.41
+No Re-ranking (Hybrid Top 4),17,paraphrased,1,1.0,1,24.98
+No Re-ranking (Hybrid Top 4),18,paraphrased,1,1.0,1,23.33
+No Re-ranking (Hybrid Top 4),19,paraphrased,1,1.0,1,26.87
+No Re-ranking (Hybrid Top 4),20,paraphrased,1,0.5,2,22.16
+No Re-ranking (Hybrid Top 4),21,keyword_heavy,1,0.5,2,22.71
+No Re-ranking (Hybrid Top 4),22,keyword_heavy,1,1.0,1,23.58
+No Re-ranking (Hybrid Top 4),23,keyword_heavy,1,1.0,1,28.15
+No Re-ranking (Hybrid Top 4),24,keyword_heavy,1,0.5,2,45.11
+No Re-ranking (Hybrid Top 4),25,keyword_heavy,1,1.0,1,24.56
+No Re-ranking (Hybrid Top 4),26,keyword_heavy,1,1.0,1,23.69
+No Re-ranking (Hybrid Top 4),27,keyword_heavy,1,1.0,1,26.31
+No Re-ranking (Hybrid Top 4),28,keyword_heavy,1,1.0,1,31.55
+No Re-ranking (Hybrid Top 4),29,keyword_heavy,1,0.5,2,24.86
+No Re-ranking (Hybrid Top 4),30,keyword_heavy,1,1.0,1,25.19
+No Re-ranking (Hybrid Top 4),31,keyword_heavy,1,1.0,1,27.65
+No Re-ranking (Hybrid Top 4),32,keyword_heavy,1,0.5,2,21.35
+No Re-ranking (Hybrid Top 4),33,keyword_heavy,1,0.25,4,24.39
+No Re-ranking (Hybrid Top 4),34,keyword_heavy,1,1.0,1,23.55
+No Re-ranking (Hybrid Top 4),35,keyword_heavy,1,0.25,4,20.92
+No Re-ranking (Hybrid Top 4),36,multi_chunk,1,1.0,1,26.36
+No Re-ranking (Hybrid Top 4),37,multi_chunk,1,1.0,1,25.38
+No Re-ranking (Hybrid Top 4),38,multi_chunk,1,1.0,1,24.33
+No Re-ranking (Hybrid Top 4),39,multi_chunk,1,1.0,1,26.38
+No Re-ranking (Hybrid Top 4),40,multi_chunk,1,0.3333,3,33.24
+No Re-ranking (Hybrid Top 4),41,multi_chunk,1,0.5,2,27.06
+No Re-ranking (Hybrid Top 4),42,multi_chunk,1,1.0,1,24.67
+No Re-ranking (Hybrid Top 4),43,multi_chunk,1,0.5,2,25.32
+No Re-ranking (Hybrid Top 4),44,multi_chunk,1,1.0,1,27.35
+No Re-ranking (Hybrid Top 4),45,multi_chunk,1,1.0,1,24.47
+No Re-ranking (Hybrid Top 4),46,near_miss,1,1.0,1,26.0
+No Re-ranking (Hybrid Top 4),47,near_miss,1,1.0,1,26.24
+No Re-ranking (Hybrid Top 4),48,near_miss,1,1.0,1,23.57
+No Re-ranking (Hybrid Top 4),49,near_miss,1,1.0,1,26.32
+No Re-ranking (Hybrid Top 4),50,near_miss,1,1.0,1,26.68
+No Re-ranking (Hybrid Top 4),51,near_miss,1,1.0,1,26.47
+No Re-ranking (Hybrid Top 4),52,near_miss,1,1.0,1,24.14
+No Re-ranking (Hybrid Top 4),53,near_miss,1,1.0,1,23.92
+No Re-ranking (Hybrid Top 4),54,near_miss,1,1.0,1,23.89
+No Re-ranking (Hybrid Top 4),55,near_miss,1,1.0,1,22.17
+No Re-ranking (Hybrid Top 4),56,unanswerable,0,0.0,-1,22.95
+No Re-ranking (Hybrid Top 4),57,unanswerable,0,0.0,-1,21.5
+No Re-ranking (Hybrid Top 4),58,unanswerable,0,0.0,-1,21.31
+No Re-ranking (Hybrid Top 4),59,unanswerable,0,0.0,-1,23.14
+No Re-ranking (Hybrid Top 4),60,unanswerable,0,0.0,-1,22.35
+Variant A: Top 10 (PyTorch CrossEncoder),1,paraphrased,1,1.0,1,1460.43
+Variant A: Top 10 (PyTorch CrossEncoder),2,paraphrased,1,1.0,1,1435.99
+Variant A: Top 10 (PyTorch CrossEncoder),3,paraphrased,1,1.0,1,569.71
+Variant A: Top 10 (PyTorch CrossEncoder),4,paraphrased,1,0.5,2,367.68
+Variant A: Top 10 (PyTorch CrossEncoder),5,paraphrased,1,1.0,1,413.57
+Variant A: Top 10 (PyTorch CrossEncoder),6,paraphrased,1,1.0,1,1043.75
+Variant A: Top 10 (PyTorch CrossEncoder),7,paraphrased,1,1.0,1,1074.92
+Variant A: Top 10 (PyTorch CrossEncoder),8,paraphrased,1,1.0,1,468.84
+Variant A: Top 10 (PyTorch CrossEncoder),9,paraphrased,1,1.0,1,253.96
+Variant A: Top 10 (PyTorch CrossEncoder),10,paraphrased,1,1.0,1,429.66
+Variant A: Top 10 (PyTorch CrossEncoder),11,paraphrased,1,1.0,1,1083.58
+Variant A: Top 10 (PyTorch CrossEncoder),12,paraphrased,1,1.0,1,537.4
+Variant A: Top 10 (PyTorch CrossEncoder),13,paraphrased,1,1.0,1,319.23
+Variant A: Top 10 (PyTorch CrossEncoder),14,paraphrased,1,1.0,1,1292.52
+Variant A: Top 10 (PyTorch CrossEncoder),15,paraphrased,1,1.0,1,398.95
+Variant A: Top 10 (PyTorch CrossEncoder),16,paraphrased,1,1.0,1,1240.89
+Variant A: Top 10 (PyTorch CrossEncoder),17,paraphrased,1,1.0,1,914.41
+Variant A: Top 10 (PyTorch CrossEncoder),18,paraphrased,1,1.0,1,1270.94
+Variant A: Top 10 (PyTorch CrossEncoder),19,paraphrased,1,1.0,1,478.9
+Variant A: Top 10 (PyTorch CrossEncoder),20,paraphrased,1,1.0,1,1144.2
+Variant A: Top 10 (PyTorch CrossEncoder),21,keyword_heavy,1,1.0,1,596.89
+Variant A: Top 10 (PyTorch CrossEncoder),22,keyword_heavy,1,1.0,1,1321.11
+Variant A: Top 10 (PyTorch CrossEncoder),23,keyword_heavy,1,1.0,1,1371.95
+Variant A: Top 10 (PyTorch CrossEncoder),24,keyword_heavy,1,1.0,1,2163.02
+Variant A: Top 10 (PyTorch CrossEncoder),25,keyword_heavy,1,1.0,1,2918.21
+Variant A: Top 10 (PyTorch CrossEncoder),26,keyword_heavy,1,1.0,1,3425.99
+Variant A: Top 10 (PyTorch CrossEncoder),27,keyword_heavy,1,1.0,1,1231.93
+Variant A: Top 10 (PyTorch CrossEncoder),28,keyword_heavy,1,1.0,1,1475.25
+Variant A: Top 10 (PyTorch CrossEncoder),29,keyword_heavy,1,1.0,1,911.71
+Variant A: Top 10 (PyTorch CrossEncoder),30,keyword_heavy,1,1.0,1,1988.57
+Variant A: Top 10 (PyTorch CrossEncoder),31,keyword_heavy,1,1.0,1,858.01
+Variant A: Top 10 (PyTorch CrossEncoder),32,keyword_heavy,1,1.0,1,1842.03
+Variant A: Top 10 (PyTorch CrossEncoder),33,keyword_heavy,1,1.0,1,2417.06
+Variant A: Top 10 (PyTorch CrossEncoder),34,keyword_heavy,1,1.0,1,813.71
+Variant A: Top 10 (PyTorch CrossEncoder),35,keyword_heavy,1,1.0,1,1012.03
+Variant A: Top 10 (PyTorch CrossEncoder),36,multi_chunk,1,1.0,1,2506.28
+Variant A: Top 10 (PyTorch CrossEncoder),37,multi_chunk,1,1.0,1,1000.56
+Variant A: Top 10 (PyTorch CrossEncoder),38,multi_chunk,1,1.0,1,2480.69
+Variant A: Top 10 (PyTorch CrossEncoder),39,multi_chunk,1,1.0,1,2913.64
+Variant A: Top 10 (PyTorch CrossEncoder),40,multi_chunk,1,1.0,1,825.62
+Variant A: Top 10 (PyTorch CrossEncoder),41,multi_chunk,1,1.0,1,793.66
+Variant A: Top 10 (PyTorch CrossEncoder),42,multi_chunk,1,1.0,1,825.67
+Variant A: Top 10 (PyTorch CrossEncoder),43,multi_chunk,1,1.0,1,2379.88
+Variant A: Top 10 (PyTorch CrossEncoder),44,multi_chunk,1,1.0,1,2389.17
+Variant A: Top 10 (PyTorch CrossEncoder),45,multi_chunk,1,1.0,1,875.25
+Variant A: Top 10 (PyTorch CrossEncoder),46,near_miss,1,1.0,1,2999.94
+Variant A: Top 10 (PyTorch CrossEncoder),47,near_miss,1,1.0,1,1150.66
+Variant A: Top 10 (PyTorch CrossEncoder),48,near_miss,1,1.0,1,2456.35
+Variant A: Top 10 (PyTorch CrossEncoder),49,near_miss,1,1.0,1,1946.84
+Variant A: Top 10 (PyTorch CrossEncoder),50,near_miss,1,1.0,1,2239.43
+Variant A: Top 10 (PyTorch CrossEncoder),51,near_miss,1,1.0,1,828.5
+Variant A: Top 10 (PyTorch CrossEncoder),52,near_miss,1,1.0,1,1616.25
+Variant A: Top 10 (PyTorch CrossEncoder),53,near_miss,1,1.0,1,2575.8
+Variant A: Top 10 (PyTorch CrossEncoder),54,near_miss,1,1.0,1,1082.42
+Variant A: Top 10 (PyTorch CrossEncoder),55,near_miss,1,1.0,1,3016.4
+Variant A: Top 10 (PyTorch CrossEncoder),56,unanswerable,0,0.0,-1,875.89
+Variant A: Top 10 (PyTorch CrossEncoder),57,unanswerable,0,0.0,-1,1755.88
+Variant A: Top 10 (PyTorch CrossEncoder),58,unanswerable,0,0.0,-1,1714.63
+Variant A: Top 10 (PyTorch CrossEncoder),59,unanswerable,0,0.0,-1,2725.48
+Variant A: Top 10 (PyTorch CrossEncoder),60,unanswerable,0,0.0,-1,1490.07
+Variant B: Top 6 (PyTorch CrossEncoder),1,paraphrased,1,1.0,1,1687.62
+Variant B: Top 6 (PyTorch CrossEncoder),2,paraphrased,1,1.0,1,1130.86
+Variant B: Top 6 (PyTorch CrossEncoder),3,paraphrased,1,1.0,1,689.86
+Variant B: Top 6 (PyTorch CrossEncoder),4,paraphrased,1,0.5,2,551.66
+Variant B: Top 6 (PyTorch CrossEncoder),5,paraphrased,1,1.0,1,777.64
+Variant B: Top 6 (PyTorch CrossEncoder),6,paraphrased,1,1.0,1,2029.7
+Variant B: Top 6 (PyTorch CrossEncoder),7,paraphrased,1,1.0,1,1649.2
+Variant B: Top 6 (PyTorch CrossEncoder),8,paraphrased,1,1.0,1,563.88
+Variant B: Top 6 (PyTorch CrossEncoder),9,paraphrased,1,1.0,1,404.37
+Variant B: Top 6 (PyTorch CrossEncoder),10,paraphrased,1,1.0,1,502.87
+Variant B: Top 6 (PyTorch CrossEncoder),11,paraphrased,1,1.0,1,1338.03
+Variant B: Top 6 (PyTorch CrossEncoder),12,paraphrased,1,1.0,1,676.89
+Variant B: Top 6 (PyTorch CrossEncoder),13,paraphrased,1,1.0,1,488.03
+Variant B: Top 6 (PyTorch CrossEncoder),14,paraphrased,1,1.0,1,1286.24
+Variant B: Top 6 (PyTorch CrossEncoder),15,paraphrased,1,1.0,1,527.35
+Variant B: Top 6 (PyTorch CrossEncoder),16,paraphrased,1,1.0,1,1220.03
+Variant B: Top 6 (PyTorch CrossEncoder),17,paraphrased,1,1.0,1,677.34
+Variant B: Top 6 (PyTorch CrossEncoder),18,paraphrased,1,1.0,1,1479.19
+Variant B: Top 6 (PyTorch CrossEncoder),19,paraphrased,1,1.0,1,584.97
+Variant B: Top 6 (PyTorch CrossEncoder),20,paraphrased,1,1.0,1,1561.06
+Variant B: Top 6 (PyTorch CrossEncoder),21,keyword_heavy,1,1.0,1,714.2
+Variant B: Top 6 (PyTorch CrossEncoder),22,keyword_heavy,1,1.0,1,1815.35
+Variant B: Top 6 (PyTorch CrossEncoder),23,keyword_heavy,1,1.0,1,638.64
+Variant B: Top 6 (PyTorch CrossEncoder),24,keyword_heavy,1,1.0,1,1262.94
+Variant B: Top 6 (PyTorch CrossEncoder),25,keyword_heavy,1,1.0,1,1412.97
+Variant B: Top 6 (PyTorch CrossEncoder),26,keyword_heavy,1,1.0,1,1422.45
+Variant B: Top 6 (PyTorch CrossEncoder),27,keyword_heavy,1,1.0,1,719.34
+Variant B: Top 6 (PyTorch CrossEncoder),28,keyword_heavy,1,1.0,1,771.77
+Variant B: Top 6 (PyTorch CrossEncoder),29,keyword_heavy,1,1.0,1,585.35
+Variant B: Top 6 (PyTorch CrossEncoder),30,keyword_heavy,1,1.0,1,912.86
+Variant B: Top 6 (PyTorch CrossEncoder),31,keyword_heavy,1,1.0,1,598.25
+Variant B: Top 6 (PyTorch CrossEncoder),32,keyword_heavy,1,1.0,1,379.56
+Variant B: Top 6 (PyTorch CrossEncoder),33,keyword_heavy,1,1.0,1,1094.16
+Variant B: Top 6 (PyTorch CrossEncoder),34,keyword_heavy,1,1.0,1,304.62
+Variant B: Top 6 (PyTorch CrossEncoder),35,keyword_heavy,1,1.0,1,395.93
+Variant B: Top 6 (PyTorch CrossEncoder),36,multi_chunk,1,1.0,1,745.17
+Variant B: Top 6 (PyTorch CrossEncoder),37,multi_chunk,1,1.0,1,336.71
+Variant B: Top 6 (PyTorch CrossEncoder),38,multi_chunk,1,1.0,1,674.57
+Variant B: Top 6 (PyTorch CrossEncoder),39,multi_chunk,1,1.0,1,372.5
+Variant B: Top 6 (PyTorch CrossEncoder),40,multi_chunk,1,1.0,1,211.76
+Variant B: Top 6 (PyTorch CrossEncoder),41,multi_chunk,1,1.0,1,210.45
+Variant B: Top 6 (PyTorch CrossEncoder),42,multi_chunk,1,1.0,1,224.54
+Variant B: Top 6 (PyTorch CrossEncoder),43,multi_chunk,1,1.0,1,670.94
+Variant B: Top 6 (PyTorch CrossEncoder),44,multi_chunk,1,1.0,1,689.17
+Variant B: Top 6 (PyTorch CrossEncoder),45,multi_chunk,1,1.0,1,228.15
+Variant B: Top 6 (PyTorch CrossEncoder),46,near_miss,1,1.0,1,528.31
+Variant B: Top 6 (PyTorch CrossEncoder),47,near_miss,1,1.0,1,212.57
+Variant B: Top 6 (PyTorch CrossEncoder),48,near_miss,1,1.0,1,407.24
+Variant B: Top 6 (PyTorch CrossEncoder),49,near_miss,1,1.0,1,202.38
+Variant B: Top 6 (PyTorch CrossEncoder),50,near_miss,1,1.0,1,573.95
+Variant B: Top 6 (PyTorch CrossEncoder),51,near_miss,1,1.0,1,204.03
+Variant B: Top 6 (PyTorch CrossEncoder),52,near_miss,1,1.0,1,239.02
+Variant B: Top 6 (PyTorch CrossEncoder),53,near_miss,1,1.0,1,556.41
+Variant B: Top 6 (PyTorch CrossEncoder),54,near_miss,1,1.0,1,199.81
+Variant B: Top 6 (PyTorch CrossEncoder),55,near_miss,1,1.0,1,402.5
+Variant B: Top 6 (PyTorch CrossEncoder),56,unanswerable,0,0.0,-1,184.34
+Variant B: Top 6 (PyTorch CrossEncoder),57,unanswerable,0,0.0,-1,193.79
+Variant B: Top 6 (PyTorch CrossEncoder),58,unanswerable,0,0.0,-1,155.75
+Variant B: Top 6 (PyTorch CrossEncoder),59,unanswerable,0,0.0,-1,456.96
+Variant B: Top 6 (PyTorch CrossEncoder),60,unanswerable,0,0.0,-1,176.37
+Variant C: Top 6 (ONNX INT8 Quantized),1,paraphrased,1,1.0,1,788.45
+Variant C: Top 6 (ONNX INT8 Quantized),2,paraphrased,1,0.5,2,305.68
+Variant C: Top 6 (ONNX INT8 Quantized),3,paraphrased,1,1.0,1,181.97
+Variant C: Top 6 (ONNX INT8 Quantized),4,paraphrased,1,0.25,4,99.4
+Variant C: Top 6 (ONNX INT8 Quantized),5,paraphrased,1,0.5,2,123.35
+Variant C: Top 6 (ONNX INT8 Quantized),6,paraphrased,1,1.0,1,540.1
+Variant C: Top 6 (ONNX INT8 Quantized),7,paraphrased,1,1.0,1,539.68
+Variant C: Top 6 (ONNX INT8 Quantized),8,paraphrased,1,1.0,1,96.3
+Variant C: Top 6 (ONNX INT8 Quantized),9,paraphrased,1,1.0,1,112.79
+Variant C: Top 6 (ONNX INT8 Quantized),10,paraphrased,1,1.0,1,131.25
+Variant C: Top 6 (ONNX INT8 Quantized),11,paraphrased,1,0.3333,3,504.33
+Variant C: Top 6 (ONNX INT8 Quantized),12,paraphrased,1,0.5,2,154.68
+Variant C: Top 6 (ONNX INT8 Quantized),13,paraphrased,1,1.0,1,99.29
+Variant C: Top 6 (ONNX INT8 Quantized),14,paraphrased,0,0.0,-1,519.55
+Variant C: Top 6 (ONNX INT8 Quantized),15,paraphrased,1,1.0,1,193.22
+Variant C: Top 6 (ONNX INT8 Quantized),16,paraphrased,1,1.0,1,419.23
+Variant C: Top 6 (ONNX INT8 Quantized),17,paraphrased,1,0.5,2,166.2
+Variant C: Top 6 (ONNX INT8 Quantized),18,paraphrased,1,1.0,1,510.69
+Variant C: Top 6 (ONNX INT8 Quantized),19,paraphrased,1,1.0,1,102.95
+Variant C: Top 6 (ONNX INT8 Quantized),20,paraphrased,1,1.0,1,437.03
+Variant C: Top 6 (ONNX INT8 Quantized),21,keyword_heavy,1,1.0,1,128.12
+Variant C: Top 6 (ONNX INT8 Quantized),22,keyword_heavy,1,1.0,1,406.36
+Variant C: Top 6 (ONNX INT8 Quantized),23,keyword_heavy,1,1.0,1,139.64
+Variant C: Top 6 (ONNX INT8 Quantized),24,keyword_heavy,1,0.3333,3,830.8
+Variant C: Top 6 (ONNX INT8 Quantized),25,keyword_heavy,1,1.0,1,913.13
+Variant C: Top 6 (ONNX INT8 Quantized),26,keyword_heavy,1,0.5,2,526.44
+Variant C: Top 6 (ONNX INT8 Quantized),27,keyword_heavy,0,0.0,-1,222.96
+Variant C: Top 6 (ONNX INT8 Quantized),28,keyword_heavy,1,0.3333,3,673.64
+Variant C: Top 6 (ONNX INT8 Quantized),29,keyword_heavy,1,1.0,1,275.93
+Variant C: Top 6 (ONNX INT8 Quantized),30,keyword_heavy,1,1.0,1,357.0
+Variant C: Top 6 (ONNX INT8 Quantized),31,keyword_heavy,1,1.0,1,96.1
+Variant C: Top 6 (ONNX INT8 Quantized),32,keyword_heavy,1,0.5,2,146.88
+Variant C: Top 6 (ONNX INT8 Quantized),33,keyword_heavy,1,0.5,2,616.78
+Variant C: Top 6 (ONNX INT8 Quantized),34,keyword_heavy,1,1.0,1,93.66
+Variant C: Top 6 (ONNX INT8 Quantized),35,keyword_heavy,1,1.0,1,133.55
+Variant C: Top 6 (ONNX INT8 Quantized),36,multi_chunk,1,0.3333,3,350.9
+Variant C: Top 6 (ONNX INT8 Quantized),37,multi_chunk,1,1.0,1,93.98
+Variant C: Top 6 (ONNX INT8 Quantized),38,multi_chunk,1,1.0,1,435.59
+Variant C: Top 6 (ONNX INT8 Quantized),39,multi_chunk,1,1.0,1,146.31
+Variant C: Top 6 (ONNX INT8 Quantized),40,multi_chunk,1,1.0,1,82.0
+Variant C: Top 6 (ONNX INT8 Quantized),41,multi_chunk,1,1.0,1,77.58
+Variant C: Top 6 (ONNX INT8 Quantized),42,multi_chunk,1,1.0,1,64.34
+Variant C: Top 6 (ONNX INT8 Quantized),43,multi_chunk,1,0.5,2,520.57
+Variant C: Top 6 (ONNX INT8 Quantized),44,multi_chunk,1,1.0,1,636.79
+Variant C: Top 6 (ONNX INT8 Quantized),45,multi_chunk,1,1.0,1,247.76
+Variant C: Top 6 (ONNX INT8 Quantized),46,near_miss,1,1.0,1,534.4
+Variant C: Top 6 (ONNX INT8 Quantized),47,near_miss,1,1.0,1,174.02
+Variant C: Top 6 (ONNX INT8 Quantized),48,near_miss,1,1.0,1,376.65
+Variant C: Top 6 (ONNX INT8 Quantized),49,near_miss,1,1.0,1,91.89
+Variant C: Top 6 (ONNX INT8 Quantized),50,near_miss,1,0.5,2,609.93
+Variant C: Top 6 (ONNX INT8 Quantized),51,near_miss,1,1.0,1,135.44
+Variant C: Top 6 (ONNX INT8 Quantized),52,near_miss,1,1.0,1,230.08
+Variant C: Top 6 (ONNX INT8 Quantized),53,near_miss,1,1.0,1,622.09
+Variant C: Top 6 (ONNX INT8 Quantized),54,near_miss,1,0.5,2,153.8
+Variant C: Top 6 (ONNX INT8 Quantized),55,near_miss,1,0.5,2,327.97
+Variant C: Top 6 (ONNX INT8 Quantized),56,unanswerable,0,0.0,-1,235.47
+Variant C: Top 6 (ONNX INT8 Quantized),57,unanswerable,0,0.0,-1,182.08
+Variant C: Top 6 (ONNX INT8 Quantized),58,unanswerable,0,0.0,-1,103.83
+Variant C: Top 6 (ONNX INT8 Quantized),59,unanswerable,0,0.0,-1,570.43
+Variant C: Top 6 (ONNX INT8 Quantized),60,unanswerable,0,0.0,-1,132.93
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),1,paraphrased,1,1.0,1,23.28
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),2,paraphrased,1,0.3333,3,20.95
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),3,paraphrased,1,1.0,1,21.12
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),4,paraphrased,1,0.5,2,20.5
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),5,paraphrased,1,1.0,1,20.54
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),6,paraphrased,1,0.5,2,19.3
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),7,paraphrased,1,1.0,1,20.5
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),8,paraphrased,1,1.0,1,20.01
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),9,paraphrased,1,1.0,1,25.18
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),10,paraphrased,1,1.0,1,73.46
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),11,paraphrased,1,0.3333,3,435.3
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),12,paraphrased,1,0.5,2,150.93
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),13,paraphrased,1,0.3333,3,24.74
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),14,paraphrased,0,0.0,-1,409.19
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),15,paraphrased,1,1.0,1,107.49
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),16,paraphrased,1,1.0,1,24.33
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),17,paraphrased,1,0.5,2,115.23
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),18,paraphrased,1,1.0,1,22.36
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),19,paraphrased,1,1.0,1,21.05
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),20,paraphrased,1,0.5,2,22.57
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),21,keyword_heavy,1,0.5,2,20.47
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),22,keyword_heavy,1,1.0,1,21.9
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),23,keyword_heavy,1,1.0,1,20.26
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),24,keyword_heavy,1,0.5,2,22.18
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),25,keyword_heavy,1,1.0,1,21.58
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),26,keyword_heavy,1,0.5,2,537.8
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),27,keyword_heavy,1,1.0,1,23.21
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),28,keyword_heavy,1,1.0,1,24.3
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),29,keyword_heavy,1,1.0,1,106.66
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),30,keyword_heavy,1,1.0,1,21.08
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),31,keyword_heavy,1,1.0,1,23.83
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),32,keyword_heavy,1,0.5,2,107.32
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),33,keyword_heavy,1,0.25,4,26.74
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),34,keyword_heavy,1,1.0,1,22.17
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),35,keyword_heavy,1,1.0,1,127.36
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),36,multi_chunk,1,0.3333,3,336.28
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),37,multi_chunk,1,1.0,1,23.68
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),38,multi_chunk,1,1.0,1,25.12
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),39,multi_chunk,1,1.0,1,25.34
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),40,multi_chunk,1,1.0,1,139.99
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),41,multi_chunk,1,1.0,1,217.67
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),42,multi_chunk,1,1.0,1,73.1
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),43,multi_chunk,1,0.5,2,630.26
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),44,multi_chunk,1,1.0,1,27.3
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),45,multi_chunk,1,1.0,1,24.65
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),46,near_miss,1,1.0,1,22.43
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),47,near_miss,1,1.0,1,23.19
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),48,near_miss,1,1.0,1,25.49
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),49,near_miss,1,1.0,1,26.39
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),50,near_miss,1,1.0,1,32.15
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),51,near_miss,1,1.0,1,23.4
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),52,near_miss,1,1.0,1,25.14
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),53,near_miss,1,1.0,1,24.98
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),54,near_miss,1,1.0,1,24.57
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),55,near_miss,1,1.0,1,20.97
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),56,unanswerable,0,0.0,-1,89.98
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),57,unanswerable,0,0.0,-1,126.45
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),58,unanswerable,0,0.0,-1,24.64
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),59,unanswerable,0,0.0,-1,581.58
+Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20),60,unanswerable,0,0.0,-1,151.33

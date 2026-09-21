@@ -1,0 +1,148 @@
+{
+  "formats": [
+    {
+      "format": "PDF (text)",
+      "status": "PASS",
+      "details": "Extracted 1 page(s), found target token."
+    },
+    {
+      "format": "PDF (scanned, OCR fallback)",
+      "status": "PASS",
+      "details": "Loaded 1 page(s) with OCR fallback check."
+    },
+    {
+      "format": "DOCX",
+      "status": "PASS",
+      "details": "Extracted 1 document(s), target token verified."
+    },
+    {
+      "format": "PPTX",
+      "status": "PASS",
+      "details": "Extracted 1 slide(s), target token verified."
+    },
+    {
+      "format": "TXT",
+      "status": "PASS",
+      "details": "Extracted 1 document(s), target token verified."
+    },
+    {
+      "format": "CSV",
+      "status": "PASS",
+      "details": "Extracted 1 block chunk(s), target token verified."
+    },
+    {
+      "format": "XLSX",
+      "status": "PASS",
+      "details": "Extracted 1 block chunk(s), target token verified."
+    }
+  ],
+  "bad_inputs": [
+    {
+      "scenario": "0-byte empty file",
+      "status": "PASS",
+      "details": "Handled cleanly as empty document without crashing."
+    },
+    {
+      "scenario": "Corrupted file binary",
+      "status": "PASS",
+      "details": "Caught expected parsing error: FileDataError"
+    },
+    {
+      "scenario": "Unsupported extension (.exe)",
+      "status": "PASS",
+      "details": "Rejected by whitelist: Unsupported file type: '.exe'. Supported: .csv, .docx, .pdf, .pptx, .txt, .xls, .xlsx"
+    },
+    {
+      "scenario": "File over 100 MB limit (105 MB)",
+      "status": "PASS",
+      "details": "105 MB strictly exceeds MAX_UPLOAD_SIZE_BYTES (100 MB), returning HTTP 413."
+    },
+    {
+      "scenario": "Path traversal in filename (../../../etc/passwd.txt)",
+      "status": "PASS",
+      "details": "Path(filename).name safely sanitized traversal to: 'passwd.txt'"
+    }
+  ],
+  "query_edge_cases": [
+    {
+      "scenario": "Empty question string",
+      "status": "PASS",
+      "details": "API endpoint validates question.strip() and raises HTTP 400 'Question cannot be empty.'"
+    },
+    {
+      "scenario": "Very long question (5,000 chars)",
+      "status": "PASS",
+      "details": "Successfully retrieved 4 chunks in 52297.3ms without crashing."
+    },
+    {
+      "scenario": "Non-English question (Hindi)",
+      "status": "PASS",
+      "details": "Retrieved 4 chunks, top source: cloudcorp_operations_and_policies.txt"
+    },
+    {
+      "scenario": "Non-English question (Telugu)",
+      "status": "PASS",
+      "details": "Retrieved 4 chunks without encoding errors."
+    },
+    {
+      "scenario": "Special characters & Injection payloads (SQLi, XSS, emojis, regex)",
+      "status": "PASS",
+      "details": "Handled safely without injection; retrieved 4 chunks."
+    }
+  ],
+  "streaming": {
+    "status": "PASS",
+    "total_tokens_streamed": 7,
+    "duration_ms": 923.74,
+    "stream_terminated_cleanly": true,
+    "token_order_verified": true,
+    "sample_output": "DocMind supports SSE streaming tokens."
+  },
+  "failover": {
+    "status": "PASS",
+    "simulation": "Injected invalid Groq API key (gsk_invalid_test_key)",
+    "result": "Caught expected authentication error (AuthenticationError). Gateway auto-mode fallback triggers.",
+    "fallback_target": "Local Ollama (http://localhost:11434)"
+  },
+  "query_rewriting_ab": {
+    "benchmark_records": [
+      {
+        "question": "What is the maximum upload size and what narrative...",
+        "rewritten_queries_count": 4,
+        "candidates_without_rewriting": 15,
+        "candidates_with_rewriting": 21,
+        "diversity_increase_pct": 40.0
+      },
+      {
+        "question": "How are employee home office stipends, internet su...",
+        "rewritten_queries_count": 4,
+        "candidates_without_rewriting": 14,
+        "candidates_with_rewriting": 24,
+        "diversity_increase_pct": 71.4
+      },
+      {
+        "question": "Compare uptime SLA percentages and API rate limits...",
+        "rewritten_queries_count": 4,
+        "candidates_without_rewriting": 14,
+        "candidates_with_rewriting": 21,
+        "diversity_increase_pct": 50.0
+      },
+      {
+        "question": "What cross-encoder model is used and how many init...",
+        "rewritten_queries_count": 4,
+        "candidates_without_rewriting": 15,
+        "candidates_with_rewriting": 22,
+        "diversity_increase_pct": 46.7
+      },
+      {
+        "question": "Explain password security in users.db and token ex...",
+        "rewritten_queries_count": 4,
+        "candidates_without_rewriting": 16,
+        "candidates_with_rewriting": 25,
+        "diversity_increase_pct": 56.2
+      }
+    ],
+    "average_candidate_diversity_increase_pct": "52.9%",
+    "conclusion": "Query rewriting increases candidate pool diversity by fetching distinct multi-facet context chunks before re-ranking."
+  }
+}

@@ -1,0 +1,37 @@
+{
+  "No Re-ranking (Hybrid Top 4)": {
+    "hit_at_4_pct": 98.18,
+    "mrr": 0.8273,
+    "avg_latency_ms": 30.55,
+    "skipped_rerank_pct": 0.0,
+    "speedup_factor": 46.92
+  },
+  "Variant A: Top 10 (PyTorch CrossEncoder)": {
+    "hit_at_4_pct": 100.0,
+    "mrr": 0.9909,
+    "avg_latency_ms": 1433.53,
+    "skipped_rerank_pct": 0.0,
+    "speedup_factor": 1.0
+  },
+  "Variant B: Top 6 (PyTorch CrossEncoder)": {
+    "hit_at_4_pct": 100.0,
+    "mrr": 0.9909,
+    "avg_latency_ms": 698.54,
+    "skipped_rerank_pct": 0.0,
+    "speedup_factor": 2.05
+  },
+  "Variant C: Top 6 (ONNX INT8 Quantized)": {
+    "hit_at_4_pct": 96.36,
+    "mrr": 0.8015,
+    "avg_latency_ms": 312.07,
+    "skipped_rerank_pct": 0.0,
+    "speedup_factor": 4.59
+  },
+  "Variant D: Top 6 (ONNX INT8 + Gap Threshold 0.20)": {
+    "hit_at_4_pct": 98.18,
+    "mrr": 0.8288,
+    "avg_latency_ms": 91.18,
+    "skipped_rerank_pct": 68.33,
+    "speedup_factor": 15.72
+  }
+}

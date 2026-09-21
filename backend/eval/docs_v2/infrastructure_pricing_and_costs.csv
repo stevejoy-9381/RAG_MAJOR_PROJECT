@@ -1,0 +1,6 @@
+service_code,service_name,tier,unit,unit_cost_usd,billing_frequency,notes
+STOR-SSD-01,High-Performance SSD Vector Storage,Tier 1,GB,0.25,Monthly,Sub-5ms FAISS read latency
+STOR-COLD-02,Standard Cold Archival Storage,Tier 2,GB,0.04,Monthly,Infrequent document snapshots
+COMP-GPU-01,Dedicated GPU Re-ranker Worker,Dedicated,Hour,3.5,Hourly,NVIDIA A10G 24GB VRAM instance
+COMP-CPU-01,Standard Shared CPU Worker,Standard,Hour,0.45,Hourly,4 vCPU 16GB RAM container
+NET-EGR-01,Public Network Egress,Standard,GB,0.08,Monthly,First 100GB free per billing cycle

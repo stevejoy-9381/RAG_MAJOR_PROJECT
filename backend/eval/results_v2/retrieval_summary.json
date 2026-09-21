@@ -1,0 +1,126 @@
+{
+  "A: FAISS Only": {
+    "overall_hit_at_4_pct": 98.18,
+    "overall_mrr": 0.9379,
+    "overall_latency_ms": 34.22,
+    "by_type": {
+      "paraphrased": {
+        "count": 20,
+        "hit_at_4": 95.0,
+        "mrr": 0.95,
+        "latency_ms": 39.8
+      },
+      "keyword_heavy": {
+        "count": 15,
+        "hit_at_4": 100.0,
+        "mrr": 0.8722,
+        "latency_ms": 27.05
+      },
+      "multi_chunk": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 29.25
+      },
+      "near_miss": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 0.95,
+        "latency_ms": 34.55
+      }
+    }
+  },
+  "B: BM25 Only": {
+    "overall_hit_at_4_pct": 80.0,
+    "overall_mrr": 0.703,
+    "overall_latency_ms": 0.64,
+    "by_type": {
+      "paraphrased": {
+        "count": 20,
+        "hit_at_4": 75.0,
+        "mrr": 0.5833,
+        "latency_ms": 0.76
+      },
+      "keyword_heavy": {
+        "count": 15,
+        "hit_at_4": 66.67,
+        "mrr": 0.6,
+        "latency_ms": 0.62
+      },
+      "multi_chunk": {
+        "count": 10,
+        "hit_at_4": 90.0,
+        "mrr": 0.8,
+        "latency_ms": 0.8
+      },
+      "near_miss": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 0.43
+      }
+    }
+  },
+  "C: Hybrid (FAISS 0.6 + BM25 0.4)": {
+    "overall_hit_at_4_pct": 98.18,
+    "overall_mrr": 0.8682,
+    "overall_latency_ms": 26.64,
+    "by_type": {
+      "paraphrased": {
+        "count": 20,
+        "hit_at_4": 95.0,
+        "mrr": 0.8083,
+        "latency_ms": 30.78
+      },
+      "keyword_heavy": {
+        "count": 15,
+        "hit_at_4": 100.0,
+        "mrr": 0.8389,
+        "latency_ms": 26.91
+      },
+      "multi_chunk": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 0.9,
+        "latency_ms": 26.39
+      },
+      "near_miss": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 21.06
+      }
+    }
+  },
+  "D: Hybrid + CrossEncoder": {
+    "overall_hit_at_4_pct": 100.0,
+    "overall_mrr": 0.9818,
+    "overall_latency_ms": 1415.96,
+    "by_type": {
+      "paraphrased": {
+        "count": 20,
+        "hit_at_4": 100.0,
+        "mrr": 0.95,
+        "latency_ms": 1345.61
+      },
+      "keyword_heavy": {
+        "count": 15,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 1463.5
+      },
+      "multi_chunk": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 1395.8
+      },
+      "near_miss": {
+        "count": 10,
+        "hit_at_4": 100.0,
+        "mrr": 1.0,
+        "latency_ms": 1574.47
+      }
+    }
+  }
+}

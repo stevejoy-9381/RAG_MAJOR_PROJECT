@@ -1,0 +1,117 @@
+{
+  "multi_tenant_isolation": {
+    "status": "PASS",
+    "document_library_isolated": true,
+    "alice_cross_retrieval_leak_count": 0,
+    "bob_cross_retrieval_leak_count": 0,
+    "details": "Zero cross-tenant chunk retrieval or document visibility detected."
+  },
+  "protected_endpoints_auth": [
+    {
+      "endpoint": "GET /auth/me",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "GET /status",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "GET /documents",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "POST /conversations",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "GET /conversations",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "GET /conversations/fake-conv-id",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "DELETE /conversations/fake-conv-id",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "PATCH /conversations/fake-conv-id",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "DELETE /documents/fake-doc.txt",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    },
+    {
+      "endpoint": "POST /stream",
+      "no_token_status": 401,
+      "expired_token_status": 401,
+      "tampered_token_status": 401,
+      "status": "PASS"
+    }
+  ],
+  "cross_user_conversations": {
+    "status": "PASS",
+    "get_other_conversation_status": 404,
+    "patch_other_conversation_status": 404,
+    "delete_other_conversation_status": 404,
+    "details": "User B received 404 Not Found on all unauthorized access attempts to User A's conversations."
+  },
+  "cross_user_document_deletion": {
+    "status": "PASS",
+    "delete_status_code": 404,
+    "target_document_preserved": true,
+    "details": "User B received HTTP 404; User A's document remained intact in Alice's library."
+  },
+  "password_hashing_audit": {
+    "status": "PASS",
+    "audit_records": [
+      {
+        "username": "sec_alice_1789996439",
+        "algorithm": "bcrypt ($2b$)",
+        "salt_work_factor": 12,
+        "hash_prefix": "$2b$12$P9l...",
+        "plaintext_leak": false,
+        "cryptographic_verification": "PASS"
+      },
+      {
+        "username": "sec_bob_1789996439",
+        "algorithm": "bcrypt ($2b$)",
+        "salt_work_factor": 12,
+        "hash_prefix": "$2b$12$Wot...",
+        "plaintext_leak": false,
+        "cryptographic_verification": "PASS"
+      }
+    ],
+    "database_path": "vectorstore/users.json",
+    "details": "Passwords stored strictly as salted bcrypt hashes ($2b$12$); no plaintext credentials stored."
+  }
+}

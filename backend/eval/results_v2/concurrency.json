@@ -1,0 +1,55 @@
+{
+  "warmup_latency_ms": 2228.31,
+  "old_configuration": {
+    "1_users": {
+      "concurrent_workers": 1,
+      "total_requests": 10,
+      "p50_ms": 1777.37,
+      "p95_ms": 1983.58,
+      "avg_ms": 1537.98,
+      "qps": 0.65
+    },
+    "5_users": {
+      "concurrent_workers": 5,
+      "total_requests": 20,
+      "p50_ms": 6495.52,
+      "p95_ms": 8927.45,
+      "avg_ms": 6276.75,
+      "qps": 0.75
+    },
+    "10_users": {
+      "concurrent_workers": 10,
+      "total_requests": 20,
+      "p50_ms": 13374.46,
+      "p95_ms": 15481.54,
+      "avg_ms": 13340.56,
+      "qps": 0.69
+    }
+  },
+  "new_configuration": {
+    "1_users": {
+      "concurrent_workers": 1,
+      "total_requests": 10,
+      "p50_ms": 605.04,
+      "p95_ms": 1133.58,
+      "avg_ms": 711.09,
+      "qps": 1.41
+    },
+    "5_users": {
+      "concurrent_workers": 5,
+      "total_requests": 20,
+      "p50_ms": 2621.55,
+      "p95_ms": 3534.93,
+      "avg_ms": 2652.02,
+      "qps": 1.78
+    },
+    "10_users": {
+      "concurrent_workers": 10,
+      "total_requests": 20,
+      "p50_ms": 5233.08,
+      "p95_ms": 5853.05,
+      "avg_ms": 5220.42,
+      "qps": 1.77
+    }
+  }
+}

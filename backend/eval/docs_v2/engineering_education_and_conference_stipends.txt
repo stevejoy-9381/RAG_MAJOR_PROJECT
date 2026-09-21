@@ -1,0 +1,6 @@
+CloudCorp Employee Continuous Learning & Conference Stipend Policy
+
+Section 1: Annual Professional Development Budget
+All full-time employees are eligible for an annual professional development and continuous education stipend.
+- Technical Engineering Staff (Software, ML, DevOps, QA): $2,500 per calendar year. Eligible expenses include technical conference tickets, cloud certification exams (AWS, GCP, Azure), and professional book purchases.
+- Sales, Marketing, and Operations Staff: $1,000 per calendar year for relevant functional training and workshops.

@@ -1,0 +1,137 @@
+{
+  "ingestion_scaling": [
+    {
+      "format": "CSV",
+      "target_size_mb": 1,
+      "actual_size_mb": 1.0,
+      "elapsed_seconds": 52.74,
+      "throughput_mb_s": 0.02,
+      "pages_or_blocks": 11,
+      "chunks_created": 11
+    },
+    {
+      "format": "CSV",
+      "target_size_mb": 10,
+      "actual_size_mb": 10.02,
+      "elapsed_seconds": 21.89,
+      "throughput_mb_s": 0.46,
+      "pages_or_blocks": 103,
+      "chunks_created": 103
+    },
+    {
+      "format": "CSV",
+      "target_size_mb": 50,
+      "actual_size_mb": 50.1,
+      "elapsed_seconds": 99.98,
+      "throughput_mb_s": 0.5,
+      "pages_or_blocks": 514,
+      "chunks_created": 514
+    },
+    {
+      "format": "DOCX",
+      "target_size_mb": 1,
+      "actual_size_mb": 0.04,
+      "elapsed_seconds": 8.71,
+      "throughput_mb_s": 0.0,
+      "pages_or_blocks": 1,
+      "chunks_created": 120
+    },
+    {
+      "format": "DOCX",
+      "target_size_mb": 10,
+      "actual_size_mb": 0.05,
+      "elapsed_seconds": 0.13,
+      "throughput_mb_s": 0.34,
+      "pages_or_blocks": 1,
+      "chunks_created": 120
+    },
+    {
+      "format": "DOCX",
+      "target_size_mb": 50,
+      "actual_size_mb": 0.08,
+      "elapsed_seconds": 0.07,
+      "throughput_mb_s": 1.16,
+      "pages_or_blocks": 1,
+      "chunks_created": 120
+    },
+    {
+      "format": "PDF",
+      "target_size_mb": 1,
+      "actual_size_mb": 1.0,
+      "elapsed_seconds": 3.56,
+      "throughput_mb_s": 0.28,
+      "pages_or_blocks": 25,
+      "chunks_created": 50
+    },
+    {
+      "format": "PDF",
+      "target_size_mb": 10,
+      "actual_size_mb": 10.0,
+      "elapsed_seconds": 0.29,
+      "throughput_mb_s": 33.9,
+      "pages_or_blocks": 25,
+      "chunks_created": 50
+    },
+    {
+      "format": "PDF",
+      "target_size_mb": 50,
+      "actual_size_mb": 50.0,
+      "elapsed_seconds": 0.39,
+      "throughput_mb_s": 128.91,
+      "pages_or_blocks": 25,
+      "chunks_created": 50
+    }
+  ],
+  "embedding_cache": {
+    "file_size_mb": 5.01,
+    "chunks": 52,
+    "cold_cache_seconds": 9.6,
+    "warm_cache_seconds": 1.75,
+    "speedup_factor": 5.48,
+    "latency_reduction_pct": 81.8
+  },
+  "concurrency_scaling": {
+    "1_users": {
+      "concurrent_workers": 1,
+      "total_requests": 10,
+      "p50_latency_ms": 1373.47,
+      "p95_latency_ms": 8196.45,
+      "avg_latency_ms": 2648.6,
+      "qps": 0.38
+    },
+    "5_users": {
+      "concurrent_workers": 5,
+      "total_requests": 20,
+      "p50_latency_ms": 6299.35,
+      "p95_latency_ms": 7877.94,
+      "avg_latency_ms": 6358.92,
+      "qps": 0.76
+    },
+    "10_users": {
+      "concurrent_workers": 10,
+      "total_requests": 20,
+      "p50_latency_ms": 13601.87,
+      "p95_latency_ms": 14031.61,
+      "avg_latency_ms": 13302.34,
+      "qps": 0.72
+    }
+  },
+  "provider_comparison": {
+    "groq": {
+      "provider": "Groq Cloud API",
+      "model": "qwen/qwen3.8-27b",
+      "status": "ONLINE",
+      "avg_ttft_ms": 815.77,
+      "avg_tokens_per_sec": 175.93,
+      "avg_total_latency_ms": 873.2,
+      "avg_tokens_generated": 32.3
+    },
+    "ollama": {
+      "provider": "Local Ollama",
+      "model": "llama3.1:8b",
+      "status": "OFFLINE (Connection refused at http://localhost:11434)",
+      "host": "http://localhost:11434",
+      "note": "Daemon not started on host machine; auto-failover automatically routes requests to Groq Cloud."
+    }
+  }
+}

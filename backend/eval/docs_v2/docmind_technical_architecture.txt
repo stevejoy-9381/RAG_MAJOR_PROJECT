@@ -1,0 +1,27 @@
+DocMind Technical Architecture Specification
+Document Version: 2.4.0
+Last Updated: 2026-08-15
+
+1. Overview
+DocMind is a high-performance, multi-tenant Retrieval-Augmented Generation (RAG) platform.
+It processes unstructured corporate documents into dense and sparse searchable representations.
+
+2. Document Ingestion & Storage Limits
+The maximum allowed document upload size is strictly defined as 100 MB (104,857,600 bytes) via MAX_UPLOAD_SIZE_BYTES.
+Files exceeding this limit are rejected with HTTP 413 Payload Too Large.
+Supported file types are: .pdf, .docx, .pptx, .txt, .csv, .xls, .xlsx.
+For narrative text, chunks are partitioned using a default CHUNK_SIZE of 800 characters and CHUNK_OVERLAP of 100 characters.
+
+3. Authentication & Cryptography
+User passwords are encrypted using bcrypt with an adaptive salt work factor of 12 ($2b$12).
+Session security uses JSON Web Tokens (JWT) signed with HMAC-SHA256.
+Authentication tokens remain valid for 1440 minutes (24 hours) via ACCESS_TOKEN_EXPIRE_MINUTES before expiration.
+All user data is isolated into per-user directories under vectorstore/{username}/.
+
+4. Retrieval & Re-ranking Pipeline
+DocMind employs a two-stage hybrid retrieval architecture:
+Dense Embeddings: sentence-transformers/all-MiniLM-L6-v2 producing 384-dimensional normalized vector embeddings.
+Sparse Search: Tokenized rank_bm25 Okapi BM25 implementation.
+Initial Candidate Retrieval: RETRIEVAL_CANDIDATES is set to 10 initial candidate chunks.
+Neural Re-ranking: Candidates are re-scored using cross-encoder/ms-marco-MiniLM-L-6-v2.
+Final Context Assembly: FINAL_CONTEXT_K is set to 4 top chunks passed to the LLM prompt.

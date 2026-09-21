@@ -1,0 +1,5 @@
+allowance_id,benefit_category,type,frequency,amount_usd,eligibility,taxable
+BEN-WFH-01,Home Workstation Setup,One-Time Stipend,Once upon hire,1500.0,Full-Time Remote,No
+BEN-NET-02,High-Speed Internet Subsidy,Monthly Subsidy,Monthly ($75/mo),900.0,All Remote Staff,No
+BEN-ERG-03,Ergonomic & Wellness Benefit,Annual Allowance,Annual,300.0,All Employees,No
+BEN-PHN-04,Mobile Phone Reimbursement,Monthly Subsidy,Monthly ($50/mo),600.0,On-Call Engineers,No
