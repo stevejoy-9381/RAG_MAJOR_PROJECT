@@ -1,0 +1,322 @@
+[
+  {
+    "id": 1,
+    "type": "factual",
+    "question": "What embedding model is used by DocMind for dense vector indexing and what is its output dimension?",
+    "expected_answer": "sentence-transformers/all-MiniLM-L6-v2 with 384-dimensional normalized vector embeddings.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 2,
+    "type": "factual",
+    "question": "What is the maximum allowed document upload size in DocMind?",
+    "expected_answer": "100 MB (104,857,600 bytes) via MAX_UPLOAD_SIZE_BYTES.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2"
+  },
+  {
+    "id": 3,
+    "type": "factual",
+    "question": "What default chunk size and chunk overlap are used for narrative documents?",
+    "expected_answer": "A default CHUNK_SIZE of 800 characters and CHUNK_OVERLAP of 100 characters.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2"
+  },
+  {
+    "id": 4,
+    "type": "factual",
+    "question": "What algorithm does DocMind use to hash user passwords before saving them in SQLite?",
+    "expected_answer": "bcrypt with an adaptive salt work factor.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 5"
+  },
+  {
+    "id": 5,
+    "type": "factual",
+    "question": "How long do JWT authentication tokens remain valid before expiring in DocMind?",
+    "expected_answer": "1440 minutes (24 hours).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 5"
+  },
+  {
+    "id": 6,
+    "type": "factual",
+    "question": "What cross-encoder model is utilized for neural re-ranking in DocMind?",
+    "expected_answer": "cross-encoder/ms-marco-MiniLM-L-6-v2.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 7,
+    "type": "factual",
+    "question": "What is the default batch size for embedding generation in DocMind?",
+    "expected_answer": "EMBEDDING_BATCH_SIZE is set to 256.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 8,
+    "type": "factual",
+    "question": "How many initial candidate chunks are retrieved before re-ranking is applied?",
+    "expected_answer": "RETRIEVAL_CANDIDATES = 10 initial candidate chunks.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 9,
+    "type": "factual",
+    "question": "What is the primary cloud LLM provider and default model in DocMind?",
+    "expected_answer": "Groq Cloud API with default model qwen/qwen3.8-27b.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4"
+  },
+  {
+    "id": 10,
+    "type": "factual",
+    "question": "What local LLM instance and models are supported as a secondary fallback?",
+    "expected_answer": "Local Ollama instance at http://localhost:11434 with llama3:8b or mistral:7b.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 4"
+  },
+  {
+    "id": 11,
+    "type": "factual",
+    "question": "What are the core working hours for full-time employees at CloudCorp?",
+    "expected_answer": "Between 10:00 AM and 3:00 PM in their respective local time zones.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 1"
+  },
+  {
+    "id": 12,
+    "type": "factual",
+    "question": "How much is the one-time remote home office stipend provided to full-time employees?",
+    "expected_answer": "$1,500 USD under Expense Code EXP-882.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 1"
+  },
+  {
+    "id": 13,
+    "type": "factual",
+    "question": "How many days of annual paid vacation (PTO) do CloudCorp employees accrue per year?",
+    "expected_answer": "22 days of paid vacation per calendar year.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 2"
+  },
+  {
+    "id": 14,
+    "type": "factual",
+    "question": "What is the paid parental leave entitlement for primary caregivers at CloudCorp?",
+    "expected_answer": "18 weeks of 100% paid parental leave within 12 months of birth or adoption.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 2"
+  },
+  {
+    "id": 15,
+    "type": "factual",
+    "question": "What is the annual deductible for CloudCorp Health Insurance Tier A (Comprehensive Gold)?",
+    "expected_answer": "$250 annual deductible for individual coverage.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 16,
+    "type": "factual",
+    "question": "Within what timeframe must suspected security incidents or credential leaks be reported at CloudCorp?",
+    "expected_answer": "Within 30 minutes of discovery to security-alert@cloudcorp.internal.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 4"
+  },
+  {
+    "id": 17,
+    "type": "factual",
+    "question": "What is the uptime percentage guaranteed by DocMind Enterprise Mission-Critical Tier?",
+    "expected_answer": "99.99% monthly uptime (maximum allowed unscheduled downtime: 4.38 minutes per month).",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 1"
+  },
+  {
+    "id": 18,
+    "type": "factual",
+    "question": "When are the regular scheduled weekly maintenance windows for DocMind Cloud?",
+    "expected_answer": "Weekly on Sundays between 02:00 UTC and 04:00 UTC.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 1"
+  },
+  {
+    "id": 19,
+    "type": "factual",
+    "question": "What rate limit in requests per minute (RPM) is enforced for Enterprise Tier customers?",
+    "expected_answer": "1,200 requests per minute (RPM) with a burst capacity of 300 requests per 10-second window.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 20,
+    "type": "factual",
+    "question": "What is the storage cost per GB per month for Tier 1 High-Performance SSD Vector Storage?",
+    "expected_answer": "$0.08 per GB per month.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 4"
+  },
+  {
+    "id": 21,
+    "type": "factual",
+    "question": "What is the target initial response time for Severity 1 critical outage incidents?",
+    "expected_answer": "Initial response within 15 minutes with 24x7 continuous engineering engagement.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 5"
+  },
+  {
+    "id": 22,
+    "type": "factual",
+    "question": "How many days do customers have to export their data following contract termination?",
+    "expected_answer": "45 calendar days via endpoint /api/export/tenant-archive.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 6"
+  },
+  {
+    "id": 23,
+    "type": "factual",
+    "question": "What standard is used to cryptographically purge tenant data on day 46 post-termination?",
+    "expected_answer": "NIST SP 800-88 Rev 1 sanitization standards.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 6"
+  },
+  {
+    "id": 24,
+    "type": "factual",
+    "question": "What is the hourly compute cost for dedicated GPU re-ranker workers?",
+    "expected_answer": "$0.75 per active GPU hour (NVIDIA L4 24GB).",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 4"
+  },
+  {
+    "id": 25,
+    "type": "factual",
+    "question": "How many rows are grouped per block chunk during tabular ingestion in DocMind?",
+    "expected_answer": "200 rows per block chunk (TABULAR_ROWS_PER_CHUNK).",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 2"
+  },
+  {
+    "id": 26,
+    "type": "multi-chunk",
+    "question": "Explain how DocMind handles hybrid search candidate retrieval and subsequent neural re-ranking from top candidates down to final context.",
+    "expected_answer": "DocMind fuses dense FAISS similarity search (weight 0.6) and sparse BM25 keyword matching (weight 0.4) using EnsembleRetriever to retrieve RETRIEVAL_CANDIDATES = 10 candidates. These 10 chunks are then evaluated pair-wise by the CrossEncoder model (cross-encoder/ms-marco-MiniLM-L-6-v2) and ranked down to FINAL_CONTEXT_K = 4 chunks sorted by descending relevance score.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 1 and Section 3"
+  },
+  {
+    "id": 27,
+    "type": "multi-chunk",
+    "question": "What are the total equipment, internet, and wellness allowances an employee at CloudCorp can receive in their first year?",
+    "expected_answer": "An employee can receive up to $2,900 USD in their first year: a one-time $1,500 home office equipment stipend (EXP-882), $900 in monthly internet subsidies ($75/month under NET-SUB-101), and a $500 annual wellness reimbursement (WELL-FIT-500).",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 1 and Section 3"
+  },
+  {
+    "id": 28,
+    "type": "multi-chunk",
+    "question": "Compare the monthly uptime guarantees, allowed downtime, and rate limits between DocMind Standard Tier and Enterprise Tier.",
+    "expected_answer": "Standard Tier guarantees 99.50% uptime (max 3.65 hours downtime/month) with 120 RPM (5 concurrent streams). Enterprise Tier guarantees 99.99% uptime (max 4.38 minutes downtime/month) with 1,200 RPM (50 concurrent streams).",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 1 and Section 3"
+  },
+  {
+    "id": 29,
+    "type": "multi-chunk",
+    "question": "How does DocMind ensure data privacy during user authentication and subsequent vector database storage?",
+    "expected_answer": "During authentication, passwords are encrypted with bcrypt into users.db and signed into JWT tokens containing user claims. During storage, vector indices are isolated per user in vectorstore/{user_id}/faiss_index, preventing cross-tenant querying or vector merging.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 1 and Section 5"
+  },
+  {
+    "id": 30,
+    "type": "multi-chunk",
+    "question": "What is the full lifecycle process for customer data from initial contract termination through export and final destruction?",
+    "expected_answer": "Upon termination, customers have a 45-day window to export documents, embeddings, and chat history in ZIP/parquet format via /api/export/tenant-archive. On day 46 post-termination, all vector indices, SQLite databases, and cached embeddings are permanently purged according to NIST SP 800-88 Rev 1 sanitization standards.",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 6"
+  },
+  {
+    "id": 31,
+    "type": "keyword-heavy",
+    "question": "What is the exact expense code for the remote home office stipend and what is the policy form code for consecutive sick leave exceeding 3 days?",
+    "expected_answer": "Expense code is EXP-882 and the medical certificate policy form code is MED-CERT-03.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 1 and Section 2"
+  },
+  {
+    "id": 32,
+    "type": "keyword-heavy",
+    "question": "What is the exact billing schedule code for SLA credits, what ticket code must be quoted when filing, and what HTTP error code is returned for rate limit violations?",
+    "expected_answer": "Schedule SLA-CR-900, ticket code SLA-CLAIM-REQ, and error code ERR-RATE-LIMIT-429 (HTTP 429).",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "Section 2 and Section 3"
+  },
+  {
+    "id": 33,
+    "type": "keyword-heavy",
+    "question": "What is the exact document ID, revision number, and default GROQ_MODEL string specified in the DocMind Technical Architecture?",
+    "expected_answer": "Document ID: DOC-SPEC-2024-V4, Revision: 4.2.1, and GROQ_MODEL: qwen/qwen3.8-27b.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Header and Section 4"
+  },
+  {
+    "id": 34,
+    "type": "keyword-heavy",
+    "question": "What are the exact codes for the internet subsidy category, laptop refresh schedule, and wellness reimbursement program?",
+    "expected_answer": "Internet subsidy: NET-SUB-101, laptop refresh schedule: HW-REF-3Y, wellness reimbursement: WELL-FIT-500.",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "Section 1 and Section 3"
+  },
+  {
+    "id": 35,
+    "type": "keyword-heavy",
+    "question": "What are the exact values of BM25_WEIGHT, FAISS_WEIGHT, RETRIEVAL_CANDIDATES, and FINAL_CONTEXT_K in DocMind?",
+    "expected_answer": "BM25_WEIGHT = 0.4, FAISS_WEIGHT = 0.6, RETRIEVAL_CANDIDATES = 10, and FINAL_CONTEXT_K = 4.",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "Section 3"
+  },
+  {
+    "id": 36,
+    "type": "unanswerable",
+    "question": "What is the exact physical office address and floor number of CloudCorp headquarters in Tokyo?",
+    "expected_answer": "NOT_FOUND",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "N/A"
+  },
+  {
+    "id": 37,
+    "type": "unanswerable",
+    "question": "What quantum encryption algorithm is planned for DocMind version 10 in the year 2035?",
+    "expected_answer": "NOT_FOUND",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "N/A"
+  },
+  {
+    "id": 38,
+    "type": "unanswerable",
+    "question": "How many total shares of common stock were issued during CloudCorp's Series C funding round?",
+    "expected_answer": "NOT_FOUND",
+    "source_file": "cloudcorp_operations_and_policies.txt",
+    "source_page_or_section": "N/A"
+  },
+  {
+    "id": 39,
+    "type": "unanswerable",
+    "question": "What is the monthly discount percentage for subscribing to a 5-year multi-region quantum storage contract in Antarctica?",
+    "expected_answer": "NOT_FOUND",
+    "source_file": "enterprise_sla_and_billing.txt",
+    "source_page_or_section": "N/A"
+  },
+  {
+    "id": 40,
+    "type": "unanswerable",
+    "question": "What is the personal phone number and personal email of the DocMind chief executive officer?",
+    "expected_answer": "NOT_FOUND",
+    "source_file": "docmind_technical_architecture.txt",
+    "source_page_or_section": "N/A"
+  }
+]

@@ -1,0 +1,42 @@
+================================================================================
+CLOUDCORP GLOBAL OPERATIONS & EMPLOYEE POLICY MANUAL
+Document Code: POL-OPS-2024-C8
+Effective Date: January 1, 2024
+Version: 5.0
+================================================================================
+
+SECTION 1: WORKING HOURS, REMOTE WORK AND EQUIPMENT STIPEND
+CloudCorp operates on a flexible core-hours model. All full-time employees are required to be available between 10:00 AM and 3:00 PM in their respective local time zones. Standard weekly commitments total 40 hours.
+- Remote Work Equipment Allowance: Full-time permanent employees are eligible for a one-time remote home office stipend of $1,500 USD (Expense Code: EXP-882). This stipend covers ergonomic chairs, external monitors, standing desk converters, and noise-canceling headsets.
+- Recurring Internet Allowance: Employees receive a monthly internet subsidy of $75 USD submitted under expense category NET-SUB-101.
+- Hardware Refresh Policy: Laptops are refreshed every 36 months under standard asset schedule HW-REF-3Y.
+
+
+SECTION 2: LEAVE ENTITLEMENTS AND ABSENCE MANAGEMENT
+CloudCorp provides comprehensive paid time off (PTO) and leave structures:
+- Annual PTO: Full-time employees accrue 22 days of paid vacation per calendar year. Up to 5 unused vacation days can be carried over into Q1 of the following year (expiring March 31).
+- Sick and Mental Wellness Leave: Employees receive 12 days of fully paid sick and wellness leave per year. Medical certificates are mandatory for consecutive absences exceeding 3 business days (Policy Form MED-CERT-03).
+- Parental Leave: Primary caregivers receive 18 weeks of 100% paid parental leave. Secondary caregivers receive 8 weeks of 100% paid leave. Both must be taken within 12 months of birth or adoption.
+- Bereavement Leave: 5 consecutive days of paid bereavement leave are provided for immediate family members.
+
+
+SECTION 3: HEALTH INSURANCE AND WELLNESS BENEFIT TIERS
+All employees are enrolled from day one in the CloudCorp Global Care medical plan:
+- Tier A (Comprehensive Gold): $0 employee premium for individual coverage, $250 annual deductible, $15 copay for primary care visits, and 90% in-network coinsurance.
+- Tier B (Standard Silver): $0 employee premium, $750 annual deductible, $30 copay for primary care visits, and 80% in-network coinsurance. Includes Health Savings Account (HSA) with $600 employer seed.
+- Dental and Vision: 100% preventive coverage, 80% basic procedures, and up to $2,000 annual maximum benefit per dependent.
+- Wellness Reimbursement: Annual reimbursement up to $500 USD for gym memberships, fitness trackers, or mental health counseling apps under program code WELL-FIT-500.
+
+
+SECTION 4: CODE OF CONDUCT, DATA PRIVACY AND IP ASSIGNMENT
+CloudCorp employees must maintain strict confidentiality regarding proprietary source code, algorithmic weights, and customer metadata.
+- Intellectual Property: All patents, software code, research artifacts, and technical specifications developed during employment belong exclusively to CloudCorp under agreement IP-ASSIGN-2024.
+- Security Protocol SEC-99: Multi-Factor Authentication (MFA) using hardware FIDO2 keys or authenticator apps is strictly enforced for all corporate accounts. SMS-based 2FA is prohibited.
+- Incident Reporting: Any suspected security breach or accidental credential leak must be reported to security-alert@cloudcorp.internal within 30 minutes of discovery.
+
+
+SECTION 5: PERFORMANCE REVIEWS, PROMOTIONS AND GRIEVANCE HANDLING
+Performance cycles occur semi-annually in June and December.
+- Rating Scale: 1 (Unsatisfactory), 2 (Developing), 3 (Meets High Standards), 4 (Exceeds Expectations), 5 (Exceptional Impact).
+- Merit Increase: Employees achieving ratings 4 or 5 qualify for annual merit increases ranging from 6% to 15% effective February 1.
+- Formal Grievances: Workplace concerns should first be discussed with people managers. If unresolved, formal complaints must be submitted via portal ticket category HR-RESOLVE-9 within 14 calendar days.

@@ -366,18 +366,53 @@ def append_to_user_index(
     texts = [doc.page_content for doc in chunks]
     metadatas = [doc.metadata for doc in chunks]
 
-    # Direct C++ tensor batch encoding via SentenceTransformer
-    if hasattr(embedding_model, "client") and hasattr(embedding_model.client, "encode"):
-        embeddings = embedding_model.client.encode(
-            texts,
-            batch_size=EMBEDDING_BATCH_SIZE,
-            show_progress_bar=False,
-            normalize_embeddings=True,
-        ).tolist()
-        text_embeddings = list(zip(texts, embeddings))
-        new_vs = FAISS.from_embeddings(text_embeddings, embedding_model, metadatas=metadatas)
-    else:
-        new_vs = FAISS.from_documents(chunks, embedding_model)
+    # Check SQLite embedding cache
+    conn = _get_cache_conn()
+    cached_embeddings: Dict[str, list] = {}
+    uncached_indices = []
+    uncached_texts = []
+
+    text_hashes = [_hash_text(t) for t in texts]
+    if text_hashes:
+        placeholders = ",".join("?" for _ in text_hashes)
+        cursor = conn.cursor()
+        cursor.execute(f"SELECT hash, embedding FROM chunk_embeddings WHERE hash IN ({placeholders})", text_hashes)
+        for h, emb_json in cursor.fetchall():
+            try:
+                cached_embeddings[h] = json.loads(emb_json)
+            except Exception:
+                pass
+
+    for idx, (t, h) in enumerate(zip(texts, text_hashes)):
+        if h not in cached_embeddings:
+            uncached_indices.append(idx)
+            uncached_texts.append(t)
+
+    if uncached_texts:
+        if hasattr(embedding_model, "client") and hasattr(embedding_model.client, "encode"):
+            new_embs = embedding_model.client.encode(
+                uncached_texts,
+                batch_size=EMBEDDING_BATCH_SIZE,
+                show_progress_bar=False,
+                normalize_embeddings=True,
+            ).tolist()
+        else:
+            new_embs = embedding_model.embed_documents(uncached_texts)
+
+        now_str = datetime.now(timezone.utc).isoformat()
+        rows_to_insert = [
+            (text_hashes[idx], json.dumps(emb), now_str)
+            for idx, emb in zip(uncached_indices, new_embs)
+        ]
+        cursor.executemany("INSERT OR IGNORE INTO chunk_embeddings (hash, embedding, created_at) VALUES (?, ?, ?)", rows_to_insert)
+        conn.commit()
+
+        for idx, emb in zip(uncached_indices, new_embs):
+            cached_embeddings[text_hashes[idx]] = emb
+
+    embeddings = [cached_embeddings[h] for h in text_hashes]
+    text_embeddings = list(zip(texts, embeddings))
+    new_vs = FAISS.from_embeddings(text_embeddings, embedding_model, metadatas=metadatas)
 
     embed_ms = (time.time() - t0) * 1000
 

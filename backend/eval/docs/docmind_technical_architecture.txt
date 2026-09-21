@@ -1,0 +1,54 @@
+================================================================================
+DOCMIND ENTERPRISE RAG PLATFORM - TECHNICAL ARCHITECTURE SPECIFICATION
+Document ID: DOC-SPEC-2024-V4
+Revision: 4.2.1
+Author: DocMind Engineering Team
+================================================================================
+
+SECTION 1: SYSTEM OVERVIEW AND CORE ARCHITECTURE
+DocMind is a multi-tenant, enterprise-grade Retrieval-Augmented Generation (RAG) platform designed to process heterogeneous organizational knowledge. The backend is implemented with Python 3.11 using the FastAPI asynchronous web framework. DocMind provides tenant isolation through per-user vector stores, SHA-256 embedding caching, query rewriting, hybrid sparse/dense retrieval, and neural cross-encoder re-ranking. Authentication is handled using JSON Web Tokens (JWT) signed with HMAC-SHA256 (HS256) algorithms.
+
+The core service pipeline consists of five decoupled layers:
+1. Ingestion Layer: Document parsing, tabular serialization, metadata enrichment, and chunking.
+2. Embedding & Vector Indexing Layer: PyTorch CPU batch encoding and FAISS flat inner-product indexing.
+3. Hybrid Retrieval Layer: Dense similarity search combined with BM25 Okapi sparse scoring.
+4. Neural Re-Ranking Layer: Cross-Encoder transformer re-scoring.
+5. Generation & Routing Layer: Multi-provider LLM gateway supporting Groq Cloud and local Ollama inference.
+
+
+SECTION 2: INGESTION PIPELINE AND CHUNKING SPECIFICATIONS
+DocMind supports multiple document formats including PDF (.pdf), Microsoft Word (.docx), PowerPoint presentations (.pptx), plain text (.txt), comma-separated values (.csv), and Excel spreadsheets (.xlsx, .xls). The maximum allowed upload size is capped at 100 MB (104,857,600 bytes) via MAX_UPLOAD_SIZE_BYTES.
+
+For narrative documents (.pdf, .docx, .pptx, .txt):
+- Chunking is performed using RecursiveCharacterTextSplitter with a default CHUNK_SIZE of 800 characters and CHUNK_OVERLAP of 100 characters.
+- Chunk separators follow a hierarchical priority list: ["\n\n\n", "\n\n", "\n", ". ", "; ", ": ", " ", ""].
+- Scanned PDF documents with less than 20 characters of extractable text per page trigger the OCR fallback engine powered by Tesseract OCR at 300 DPI rendering resolution.
+
+For tabular documents (.csv, .xlsx, .xls):
+- Tabular files bypass recursive character chunking and use structured row-block aggregation.
+- The default TABULAR_ROWS_PER_CHUNK is set to 200 rows per block chunk.
+- Tabular ingestion achieves a 10x to 50x indexing speedup compared to row-by-row parsing by compiling tabular chunks with full column headers and pipe-delimited values.
+
+
+SECTION 3: HYBRID RETRIEVAL AND RE-RANKING PIPELINE
+DocMind combines dense semantic vector search with sparse keyword matching to avoid semantic drift and retain exact entity recall.
+- Dense Indexing: Utilizes the "sentence-transformers/all-MiniLM-L6-v2" model producing 384-dimensional normalized vector embeddings. Embedding generation runs with an EMBEDDING_BATCH_SIZE of 256 using PyTorch CPU multi-threading.
+- Sparse Indexing: Utilizes the BM25Retriever implementing the Okapi BM25 algorithm.
+- Hybrid Fusion: EnsembleRetriever fuses dense and sparse result lists using weighted score combination. The default configuration uses FAISS_WEIGHT = 0.6 and BM25_WEIGHT = 0.4.
+- Candidate Retrieval: When re-ranking is enabled, the hybrid retriever retrieves RETRIEVAL_CANDIDATES = 10 initial candidate chunks.
+- Re-Ranking Engine: The candidate pool is processed by a CrossEncoder model using "cross-encoder/ms-marco-MiniLM-L-6-v2". The re-ranker evaluates query-document pairs simultaneously and returns the top FINAL_CONTEXT_K = 4 chunks sorted by descending relevance score.
+
+
+SECTION 4: LLM GATEWAY, ROUTING AND QUERY REWRITING
+DocMind features an intelligent dual-provider LLM routing gateway:
+- Primary Cloud Provider: Groq Cloud API using high-throughput LPU acceleration with default model "qwen/qwen3.8-27b" (aliased to GROQ_MODEL). Default parameters include LLM_TEMPERATURE = 0.2, LLM_TOP_P = 1.0, and LLM_MAX_TOKENS = 1024.
+- Secondary Local Provider: Local Ollama instance (default endpoint http://localhost:11434) using "llama3:8b" or "mistral:7b".
+- Automatic Failover: When provider mode is set to "auto", DocMind attempts the primary Groq endpoint. If an authentication error, rate limit (HTTP 429), or network timeout exceeds LLM_TIMEOUT_SECONDS (60.0 seconds) across MAX_LLM_RETRIES (3 attempts), it automatically falls back to Ollama.
+- Query Rewriting: When QUERY_REWRITING_ENABLED is true, user questions are expanded into 3 sub-query variations before retrieval, and retrieved results are deduplicated via SHA-256 hash sets before passing to the re-ranker.
+
+
+SECTION 5: AUTHENTICATION, SECURITY AND MULTI-TENANCY
+DocMind enforces zero-trust multi-tenancy:
+- User Passwords: Passwords are hashed using bcrypt with an adaptive salt work factor before storage in SQLite (users.db). Plaintext passwords are never logged or stored.
+- JWT Authentication: Authentication tokens expire after ACCESS_TOKEN_EXPIRE_MINUTES = 1440 minutes (24 hours). Tokens contain user_id, email, and role claims.
+- Data Isolation: Vector indices are partitioned into user-isolated directory paths `vectorstore/{user_id}/faiss_index`. Document metadata is indexed per user in `document_store.db`. No cross-tenant document querying or vector merging is permitted. Attempting to query another user's index results in access denial or empty candidate sets.

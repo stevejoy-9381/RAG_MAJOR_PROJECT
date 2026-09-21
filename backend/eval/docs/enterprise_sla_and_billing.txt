@@ -1,0 +1,50 @@
+================================================================================
+ENTERPRISE SERVICE LEVEL AGREEMENT & CLOUD BILLING FRAMEWORK
+Document Reference: SLA-BILL-2024-X1
+Effective Date: March 15, 2024
+Author: Infrastructure Operations & Finance
+================================================================================
+
+SECTION 1: SERVICE AVAILABILITY COMMITMENTS & TIERS
+DocMind Cloud platform provides two formal uptime guarantee tiers:
+- Standard Tier: Guarantees 99.50% monthly uptime (maximum allowed unscheduled downtime: 3.65 hours per month).
+- Enterprise Mission-Critical Tier: Guarantees 99.99% monthly uptime (maximum allowed unscheduled downtime: 4.38 minutes per month). Excludes scheduled maintenance windows pre-notified 72 hours in advance.
+- Maintenance Windows: Scheduled weekly on Sundays between 02:00 UTC and 04:00 UTC.
+
+
+SECTION 2: SERVICE CREDIT PENALTIES & DOWNTIME REBATES
+If monthly availability drops below SLA commitments, customers are eligible for automated billing credits under Schedule SLA-CR-900:
+- Availability 99.00% to 99.49%: 10% credit of monthly subscription invoice.
+- Availability 95.00% to 98.99%: 25% credit of monthly subscription invoice.
+- Availability below 95.00%: 50% credit of monthly subscription invoice.
+- Claims Filing: Customers must submit a service credit claim within 30 calendar days of the outage incident quoting ticket code SLA-CLAIM-REQ. Credits are applied to the next billing cycle and are non-refundable for cash.
+
+
+SECTION 3: API RATE LIMITS, BURST CAPS AND CONCURRENCY
+DocMind API enforces tier-based rate limits to ensure cluster stability:
+- Standard Tier: 120 requests per minute (RPM), burst capacity of 30 requests per 10-second window, maximum 5 concurrent streaming queries.
+- Enterprise Tier: 1,200 requests per minute (RPM), burst capacity of 300 requests per 10-second window, maximum 50 concurrent streaming queries.
+- Throttling Policy: Excess requests receive HTTP 429 Too Many Requests with header `Retry-After: <seconds>` and error code ERR-RATE-LIMIT-429.
+
+
+SECTION 4: STORAGE AND COMPUTE PRICING SCHEDULE
+Pricing is calculated based on document storage, vector index size, and compute consumption:
+- High-Performance Vector Storage (Tier 1 SSD): $0.08 per GB per month.
+- Cold Archive Document Storage (Tier 2 Object Store): $0.02 per GB per month.
+- CPU Embedding Workers: $0.04 per compute hour.
+- Dedicated GPU Reranker Workers (NVIDIA L4 24GB): $0.75 per active GPU hour.
+- Minimum Monthly Billing Commitment: $250.00 USD for Enterprise tier accounts.
+
+
+SECTION 5: INCIDENT SEVERITY CLASSIFICATION & RESPONSE TIMES
+Support response commitments are categorized by impact severity:
+- Severity 1 (Critical Outage - Platform Down): Initial response within 15 minutes. 24x7 continuous engineering engagement. Target resolution under 2 hours.
+- Severity 2 (Major Degradation - Degraded Search/Latency > 5s): Initial response within 60 minutes. Business hours + on-call. Target resolution under 6 hours.
+- Severity 3 (Minor Issue / Query Inaccuracy): Initial response within 4 business hours. Target resolution next release cycle.
+- Severity 4 (General Inquiries / Feature Requests): Initial response within 24 business hours.
+
+
+SECTION 6: CONTRACT TERMINATION, DATA EXPORT AND RETENTION
+Upon contract termination or account closure:
+- Data Export Window: Customers have 45 calendar days to export all ingested documents, embeddings, and chat history via API endpoint `/api/export/tenant-archive` (Export Format: ZIP archive containing JSON and parquet files).
+- Secure Deletion: On day 46 post-termination, all tenant vector indices, SQLite databases, and cached embeddings are cryptographically purged using NIST SP 800-88 Rev 1 sanitization standards.
